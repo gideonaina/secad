@@ -2,6 +2,7 @@
 
 # Define Docker Compose file
 COMPOSE_FILE := docker-compose.yml
+RAG_COMPOSE_FILE := rag.docker-compose.yml
 
 LOCAL_LLM ?= llama3
 
@@ -20,7 +21,18 @@ help:
 
 start:
 	@echo "Running with LOCAL_LLM=$(LOCAL_LLM)"
-	LOCAL_LLM=$(LOCAL_LLM) docker-compose -f $(COMPOSE_FILE) up
+	LOCAL_LLM=$(LOCAL_LLM) docker-compose -f $(COMPOSE_FILE) up --build
+
+llm: 
+	@echo "Running ONLY services with LOCAL_LLM=$(LOCAL_LLM)"
+	LOCAL_LLM=$(LOCAL_LLM) docker-compose -f $(COMPOSE_FILE) up model_loader --build
+
+rag:
+	@echo "Running RAG"
+	docker-compose -f $(RAG_COMPOSE_FILE) up --build
+
+stop-rag:
+	docker-compose -f $(RAG_COMPOSE_FILE) down
 
 stop:
 	docker-compose -f $(COMPOSE_FILE) down
