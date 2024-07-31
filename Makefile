@@ -1,8 +1,9 @@
 # Makefile for Docker Compose operations
 
 # Define Docker Compose file
-COMPOSE_FILE := docker-compose.yml
+COMPOSE_FILE := llm.docker-compose.yml
 RAG_COMPOSE_FILE := rag.docker-compose.yml
+DOCKER_COMPOSE := docker compose
 
 LOCAL_LLM ?= llama3
 
@@ -21,24 +22,42 @@ help:
 
 start:
 	@echo "Running with LOCAL_LLM=$(LOCAL_LLM)"
-	LOCAL_LLM=$(LOCAL_LLM) docker-compose -f $(COMPOSE_FILE) up --build
+	LOCAL_LLM=$(LOCAL_LLM) $(DOCKER_COMPOSE) -f $(COMPOSE_FILE) up --build
 
 llm: 
 	@echo "Running ONLY services with LOCAL_LLM=$(LOCAL_LLM)"
-	LOCAL_LLM=$(LOCAL_LLM) docker-compose -f $(COMPOSE_FILE) up model_loader --build
+	LOCAL_LLM=$(LOCAL_LLM) $(DOCKER_COMPOSE) -f $(COMPOSE_FILE) up model_loader --build
 
 rag:
 	@echo "Running RAG"
-	docker-compose -f $(RAG_COMPOSE_FILE) up --build
+	$(DOCKER_COMPOSE) -f $(RAG_COMPOSE_FILE) up --build
 
 stop-rag:
-	docker-compose -f $(RAG_COMPOSE_FILE) down
+	$(DOCKER_COMPOSE) -f $(RAG_COMPOSE_FILE) down
 
 stop:
-	docker-compose -f $(COMPOSE_FILE) down
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) down
 
 clean:
-	docker-compose -f $(COMPOSE_FILE) down -v
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) down -v
+
+clean-rag:
+	$(DOCKER_COMPOSE) -f $(RAG_COMPOSE_FILE) down -v
+
+tear-rag:
+	$(DOCKER_COMPOSE) -f $(RAG_COMPOSE_FILE) down -v && \
+	docker stop $(docker ps -aq) && \
+	docker volume rm $(docker volume ls -q)
+nuke:
+	docker volume rm $(docker volume ls -q)
+
+notebook:
+	docker network inspect ragnet >/dev/null 2>&1 || docker network create ragnet
+	docker run -it --rm -p 10000:8888 --network ragnet -v "${PWD}":/home/jovyan/work quay.io/jupyter/datascience-notebook:2024-05-27
+
+embed:
+	cd src && python data_prep.py -f /Users/gideonaina/dev/local-llm/knowledge_docs/PCI-DSS-v4_0.pdf -c pci-v4-0
+	cd src && python data_prep.py -f /Users/gideonaina/dev/local-llm/knowledge_docs/nist.pdf -c container_sec
 
 test:
 	@echo "------- Checking Port 11434 -----"

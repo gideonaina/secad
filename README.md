@@ -37,9 +37,9 @@ Some examples are below:
 
 **Chat Endpoint**
 ```
-$ curl http://localhost:11434/api/generate -d '{
+curl http://localhost:11434/api/generate -d '{
   "model": "llama3",
-  "prompt":"Why is the sky blue?"
+  "prompt":"Name the planets in the solar system?"
 }'
 ```
 
