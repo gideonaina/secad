@@ -1,23 +1,37 @@
 from langchain_openai import OpenAIEmbeddings
 from langchain_postgres.vectorstores import PGVector
 import os
-from dotenv import load_dotenv
 import argparse
 import psycopg
 
-
+from dotenv import load_dotenv
 load_dotenv()
 
 
 # class QueryEmbedding:
 #         def __init__(self) -> None:
 #                 pass
+# map = {
+#     "Security Review": "security_requirement"
+# }
+POSTGRES_USERNAME=os.getenv("POSTGRES_USERNAME")
+POSTGRES_PASSWORD=os.getenv("POSTGRES_PASSWORD")
+POSTGRES_HOST=os.getenv("POSTGRES_HOST")
+POSTGRES_DATABASE=os.getenv("POSTGRES_DATABASE")
+POSTGRES_PORT=os.getenv("POSTGRES_PORT")
+POSTGRES_CONNECTION_PREFIX=os.getenv("POSTGRES_CONNECTION_PREFIX")
+CONNECTION_STRING = f"{POSTGRES_CONNECTION_PREFIX}://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DATABASE}"
+os.environ["CONNECTION_STRING"] = CONNECTION_STRING
 
-def similarity_search(prompt: str) -> str:
+collection_name = os.getenv("COLLECTION_NAME")
+connection_string = os.getenv("CONNECTION_STRING")
+
+
+def similarity_search(prompt: str, collection_name = collection_name) -> str:
             
     embeddings = OpenAIEmbeddings()  # Provide your OpenAI API key
-    connection_string = os.getenv("CONNECTION_STRING")
-    collection_name = os.getenv("COLLECTION_NAME")
+    # connection_string = os.getenv("CONNECTION_STRING")
+    print(f"PGVector parameters: connection: {connection_string}, collection_name: {collection_name}")
     vector_store = PGVector(connection=connection_string, embeddings=embeddings, collection_name=collection_name)
     
     print(f". . . create embedding for prompt - {prompt}")
@@ -126,19 +140,10 @@ def main():
     parser = argparse.ArgumentParser(description="Query Embedding")
     parser.add_argument("-p", "--prompt", required=True, type=str, help="User Prompt")
 
-    POSTGRES_USERNAME=os.getenv("POSTGRES_USERNAME")
-    POSTGRES_PASSWORD=os.getenv("POSTGRES_PASSWORD")
-    POSTGRES_HOST=os.getenv("POSTGRES_HOST")
-    POSTGRES_DATABASE=os.getenv("POSTGRES_DATABASE")
-    POSTGRES_PORT=os.getenv("POSTGRES_PORT")
-    POSTGRES_CONNECTION_PREFIX=os.getenv("POSTGRES_CONNECTION_PREFIX")
-
-    CONNECTION_STRING = f"{POSTGRES_CONNECTION_PREFIX}://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DATABASE}"
-    os.environ["CONNECTION_STRING"] = CONNECTION_STRING
-
 
     args = parser.parse_args()
-    similarity_search(args.prompt)
+    resp = similarity_search(args.prompt)
+    print(resp)
     # test(args.prompt)
 
 if __name__ == "__main__":

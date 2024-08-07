@@ -7,6 +7,7 @@ DOCKER_COMPOSE := docker compose
 
 LOCAL_LLM ?= llama3
 
+
 .PHONY: help start stop clean
 
 # ANSI color codes
@@ -16,50 +17,56 @@ NC := \033[0m # No Color
 
 help:
 	@echo "Usage:"
-	@echo "  make start    - Start Docker Compose"
-	@echo "  make stop     - Stop Docker Compose"
-	@echo "  make clean    - Stop Docker Compose and remove volumes"
+	@awk -F: '/^[a-zA-Z0-9][^:]*:/ {print $$1}' Makefile
 
-start:
+full-llm:
+	@echo Starts local deployment of LLM with chat Interface
 	@echo "Running with LOCAL_LLM=$(LOCAL_LLM)"
 	LOCAL_LLM=$(LOCAL_LLM) $(DOCKER_COMPOSE) -f $(COMPOSE_FILE) up --build
 
-llm: 
+llm-only:
+	@echo Starts on the LLM container
 	@echo "Running ONLY services with LOCAL_LLM=$(LOCAL_LLM)"
 	LOCAL_LLM=$(LOCAL_LLM) $(DOCKER_COMPOSE) -f $(COMPOSE_FILE) up model_loader --build
 
 rag:
+	@echo Launches the RAG service
 	@echo "Running RAG"
 	$(DOCKER_COMPOSE) -f $(RAG_COMPOSE_FILE) up --build
 
 stop-rag:
+	@echo stops the RAG service
 	$(DOCKER_COMPOSE) -f $(RAG_COMPOSE_FILE) down
 
-stop:
+stop-llm:
+	@echo stops the LLM service
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) down
 
 clean:
+	@echo remove the containers setup by the LLM service
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) down -v
 
 clean-rag:
+	@echo remove the containers setup by the RAG service
 	$(DOCKER_COMPOSE) -f $(RAG_COMPOSE_FILE) down -v
 
 tear-rag:
+	@echo stops RAG service, removes the container and volumes
 	$(DOCKER_COMPOSE) -f $(RAG_COMPOSE_FILE) down -v && \
 	docker stop $(docker ps -aq) && \
 	docker volume rm $(docker volume ls -q)
 nuke:
-	docker volume rm $(docker volume ls -q)
+	@echo remove all containers and volumes on the host machine
+	docker stop $$(docker ps -aq) && \
+	docker volume rm $$(docker volume ls -q)
 
 notebook:
+	@echo start a Jupyter notebook
 	docker network inspect ragnet >/dev/null 2>&1 || docker network create ragnet
 	docker run -it --rm -p 10000:8888 --network ragnet -v "${PWD}":/home/jovyan/work quay.io/jupyter/datascience-notebook:2024-05-27
 
-embed:
-	cd src && python data_prep.py -f /Users/gideonaina/dev/local-llm/knowledge_docs/PCI-DSS-v4_0.pdf -c pci-v4-0
-	cd src && python data_prep.py -f /Users/gideonaina/dev/local-llm/knowledge_docs/nist.pdf -c container_sec
-
 test:
+	@echo test port availability
 	@echo "------- Checking Port 11434 -----"
 	@timeout 2s curl -sf http://localhost:11434 > /dev/null && echo "$(GREEN)http://localhost:11434 ok$(NC)" || echo "$(RED)http://localhost:11434 error$(NC)"
 	@timeout 2s curl -sf http://127.0.0.1:11434 > /dev/null && echo "$(GREEN)http://127.0.0.1:11434 ok$(NC)"|| echo "$(RED)http://127.0.0.1:11434 error$(NC)"
