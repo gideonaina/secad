@@ -9,8 +9,13 @@ class KESCrew:
         Task - determine the crew to run
         Domain - determine the RAG data to use (i.e similarity search scope)
         '''
+        if prompt in ["", None] and base64_encoded_picture in ["", None]:
+            return
+        
         if(base64_encoded_picture):
             final_prompt = f"Prompt: {prompt}\nImage: {base64_encoded_picture}"
+        else: 
+            final_prompt = prompt
     
 
         if(task == "Security Review"):
@@ -41,9 +46,5 @@ class KESCrew:
         else:
             resp = GeneralCrew().run(final_prompt)
             return resp.content
-        
-        # else:
-        #     return f"Apologies!, We are yet to create a crew for {task}"
-
 
         

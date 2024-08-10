@@ -2,6 +2,7 @@ import gradio as gr
 import os
 from knowledge_retrieval.kes_crew import KESCrew
 import base64
+from PIL import Image
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -10,13 +11,24 @@ product_security_task = ["Security Review", "Threat Modeling", "Logging & Auditi
 security_testing_task = ["Pentration Testing", "DAST"]
 general_task = ["General"]
 
+
+
+def resize_image(image_path, max_width=400, max_height=400):
+    image = Image.open(image_path)
+    image.thumbnail((max_width, max_height))
+    resized_path = image_path
+    image.save(resized_path)
+    print(f"resized_path - {resized_path}")
+    return resized_path
+
 def process_file_base64(file):
     if file is None:
         return ""
     
     print(f"picture b4 encoding: {file}")
+    resized_file_path = resize_image(file)
     # Read the file and convert to base64
-    with open(file, "rb") as f:
+    with open(resized_file_path, "rb") as f:
         file_content = f.read()
         encoded_file = base64.b64encode(file_content).decode('utf-8')
     return encoded_file
@@ -39,10 +51,17 @@ def process_selection(domain, task, user_prompt, file_input):
     # return ""
 
 css = """ 
-.small-file-upload input[type="file"] {
-    height: 10px;
-    padding: 5px;
-}
+    .small-file-upload input[type="file"] {
+        height: 10px;
+        padding: 5px;
+    }
+    .custom-button {
+        background-color: #c1c7fc !important; 
+        color: #696af4 !important;
+    }
+    .custom-button:hover {
+        background-color: #e4ecfc !important;
+    }
 """
 
 # Create the Gradio interface
@@ -52,22 +71,24 @@ with gr.Blocks(theme=gr.themes.Soft(), css=css) as demo:
     task = gr.Dropdown(choices=general_task, label="Select Task", value=general_task[0])
     with gr.Row():
         with gr.Column():
-            file_input = gr.File(label="Upload your image", elem_classes="small-file-upload")
+            file_input = gr.File(label="Upload your image", visible=True)
             # background_info = gr.Textbox(lines=4, placeholder="Enter background information here...", label="Background Information")
             user_prompt = gr.Textbox(lines=15, placeholder="Enter some text here...", label="User Prompt")  # Text input
-            submit_button = gr.Button("Submit")
+            submit_button = gr.Button("Submit", elem_classes="custom-button")
         
         with gr.Column():
             # gr.Markdown("## Upload a File")
             # background_info = gr.Textbox(lines=4, placeholder="Enter background information here...", label="Background Information")
-            output = gr.Textbox(label="Output", lines=40)
+            output = gr.Textbox(label="Output", lines=17)
 
     # Update the second dropdown based on the first dropdown's value
     domain.change(fn=update_dropdown, inputs=domain, outputs=task)
     
     # Process the final selection
     # submit_button.click(fn=process_selection, inputs=[domain, task, background_info], outputs=output)
-    submit_button.click(fn=process_selection, inputs=[domain, task, user_prompt, file_input], outputs=output)
+    # print (f"file: {file_input}, prompt: {user_prompt}")
+    if (file_input or user_prompt):
+        submit_button.click(fn=process_selection, inputs=[domain, task, user_prompt, file_input], outputs=output)
 
 
 gr.close_all()
