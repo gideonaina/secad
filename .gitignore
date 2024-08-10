@@ -6,3 +6,4 @@ __pycache__/
 .env
 knowledge_extraction/knowledge_retrieval/security_review_crew/
 **.egg-info/
+.terraform
