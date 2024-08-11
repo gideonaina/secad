@@ -5,11 +5,22 @@ LLM are a useful piece of technology for encoding  information, trained on vast 
 Although a very versatile tool for any domain, these issue limit its rate of adoption at enterprise
 
 ## 2.0: Solution.
-The goal of this project is to provide a template for adoption of AI (specificially LLM) for various enterprise task such that the identified risks and problems are mitigated to some extent.
+This project aims to provide a template for the adoption of AI, specifically LLMs, for various enterprise tasks, addressing the identified risks and challenges to some extent. Key strategies include:
 
-## 3.0 Summary.
-This repository contains various components of the Knowledge Extraction System (KES). The KES is designed to deliver relevant in-context information based on user prompts or questions. The final result presented to the user consolidates information from multiple sources. By leveraging Retrieval-Augmented Generation (RAG), the system ensures that the information provided is highly relevant, minimizing the risk of hallucinations or the LLM relying solely on its training data.
-KES can be adopted for use in any domain of work or life where there is need relevant information having specific context without least chance of hallucination is needed.
+**Retrieval-Augmented Generation (RAG)**: RAG can be leveraged to create augmented prompts that provide better context for LLM outputs, improving the relevance and accuracy of the generated information.
+
+**Prompt Engineering**: Crafting well-structured prompts can set clear boundaries for LLMs, enabling them to operate within defined parameters and produce more relevant results. When combined with AI agents, well-engineered prompts can drive efficient task completion and workflow creation.
+
+**Privacy Measures**: Privacy concerns can be mitigated by deploying LLMs locally within an organization, ensuring that the models are governed by the same access controls as other IT systems. Whether deployed on-premises or in a controlled cloud environment, this approach helps safeguard sensitive information.
+
+By implementing these strategies, enterprises can significantly mitigate (though not entirely eliminate) the challenges associated with LLM adoption, paving the way for more secure and effective use of AI in their operations.
+
+## 3.0 System Summary.
+The solution developed to address these challenges is code-named the Knowledge Extraction System (KES). KES leverages Retrieval-Augmented Generation (RAG) and sophisticated prompt engineering with AI agents to create a robust framework that accomplishes specific tasks while delivering highly relevant outputs. The KES framework simplifies the process of ingesting additional data into RAG and facilitates the creation of AI agents, referred to as "crew," each tailored to perform distinct tasks.
+
+The output from any crew is contextually relevant information, produced through well-crafted prompts that guide each agent’s work. This output consolidates data from multiple sources, ensuring that the final result is comprehensive and precise. By utilizing RAG, KES significantly reduces the risk of hallucinations or the LLM relying solely on its training data, making the information it provides more accurate and dependable.
+
+KES is versatile and can be adopted across various domains where there is a need for context-specific, relevant information with minimal risk of inaccuracies.
 
 ## 4.0: System Architecture.
 The architecture diagram below illustrates the different layers and complexities of the application. Level 1 presents a high-level overview, while subsequent levels (Level 2) delves into specific components to provide more detailed information.
@@ -37,32 +48,26 @@ The data from the Data Processing Service is sent here. The data is first chunke
 
 The Knowledge Retrieval Service uses augumented prompt with specilized AI agent to get the best answer for task assigned.
 
-## 4.0: Implementation
+## 5.0: Use Cases
 
-### 4.1: Code Repo
-
-WIP
-
-### 4.2: Use Cases
-
-As previously mentioned, KES can be used in any domain for any task that requires information with a reasonable amount of context and fewer generated ideas. Below are some use cases currently being explored:
+As previously mentioned, KES can be used in any domain for any task that requires information with a reasonable amount of context and fewer generated ideas. Below are some use cases developed or currently being explored:
 
 **Use Case 1:   Security Architect KES**:
 
 A security architect performs many tasks that contribute to the security of enterprise software systems. Some of those include Security Review, Code Review, and Threat Modeling. To properly perform these tasks, the Security Architect needs detailed context of the application being reviewed in various dimensions. The use of "various dimensions" here means all the information the Security Architect needs to gather to perform their tasks. These include: 
 - System Understanding
-- System Components
+- System Components Information
 - Data Dictionary
 - Trust Boundaries
 - Threat Scenarios
 - Countermeasures
 
-To use KES to perform the role of a Security Architect, one needs to be able to provide the LLM with the following contextual information:
+To use KES to perform taskd of a Security Architect, one needs to be able to provide the LLM with the following contextual information:
 - Initial prompt: This will be in the form of an architectural diagram or detailed system description
 - Enterprise Security Requirements: These are the high-level security requirements defined by the product security team. The generic security requirements serve to guide security reviews in various domains. These will include Data Transfer Security Requirements, Network Security Requirements, Cloud Security Requirements, IAM Security Requirements, etc. Each of these is organization and (sometimes product) specific.
 - Governance, Risk, and Compliance (GRC) Policies: These are policies defined by the GRC team to provide governance and compliance guidance.
 
-By providing the contextual information as a RAG and utilizing an AI agent to orchestrate the steps for each task, one can easily scale the work being done by security architects.
+By providing the contextual information as a RAG and utilizing an AI agent to orchestrate the steps for each task, one can easily scale some of a security architect's task.
 
 **Use Case 2: Security Test KES**:
 
@@ -71,7 +76,3 @@ WIP
 **Use Case 3: Real Estate Analysis KES**:
 
 WIP
-
-### 4.2: Reusable Framework
-
-The KES framework is setup in such a way that new use cases can be easily added with minimum setup. The new use case will take advantage of the infrastructure already setup.
