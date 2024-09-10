@@ -10,9 +10,11 @@ boto3
 argparse
 langchain_postgres
 
-crewai
+crewai==0.51.0
+crewai-tools==0.8.3
 unstructured==0.10.25
 pyowm==3.3.0
 tools==0.1.9
+pypandoc
 
 gradio

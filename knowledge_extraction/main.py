@@ -1,37 +1,14 @@
 import gradio as gr
 import os
 from knowledge_retrieval.kes_crew import KESCrew
-import base64
-from PIL import Image
+from util import convert_markdown
 from dotenv import load_dotenv
 load_dotenv()
 
 domain_option = ["General", "Product Security", "Security Testing"]
-product_security_task = ["Security Review", "Threat Modeling", "Logging & Auditing Requirement"]
+product_security_task = ["Security Review", "Threat Modeling"]
 security_testing_task = ["Pentration Testing", "DAST"]
 general_task = ["General"]
-
-
-
-def resize_image(image_path, max_width=400, max_height=400):
-    image = Image.open(image_path)
-    image.thumbnail((max_width, max_height))
-    resized_path = image_path
-    image.save(resized_path)
-    print(f"resized_path - {resized_path}")
-    return resized_path
-
-def process_file_base64(file):
-    if file is None:
-        return ""
-    
-    print(f"picture b4 encoding: {file}")
-    resized_file_path = resize_image(file)
-    # Read the file and convert to base64
-    with open(resized_file_path, "rb") as f:
-        file_content = f.read()
-        encoded_file = base64.b64encode(file_content).decode('utf-8')
-    return encoded_file
 
 
 def update_dropdown(selection):
@@ -44,10 +21,10 @@ def update_dropdown(selection):
 
 # Define a function to process the final selection
 def process_selection(domain, task, user_prompt, file_input):
-    picture_base64 = process_file_base64(file_input)
+    # picture_base64 = process_file_base64(file_input)
     # print(f"Parameters are: Domain: {domain}")
     # print(f"picture post encoding: {picture_base64}")
-    return KESCrew().run(domain=domain, task=task, prompt=user_prompt, base64_encoded_picture=picture_base64)
+    return KESCrew().run(domain=domain, task=task, prompt=user_prompt, image_path=file_input)
     # return ""
 
 css = """ 
@@ -79,7 +56,14 @@ with gr.Blocks(theme=gr.themes.Soft(), css=css) as demo:
         with gr.Column():
             # gr.Markdown("## Upload a File")
             # background_info = gr.Textbox(lines=4, placeholder="Enter background information here...", label="Background Information")
+            pdf = gr.Textbox(value="pdf", visible=False)
+            docx = gr.Textbox(value="docx", visible=False)
             output = gr.Textbox(label="Output", lines=17)
+            export_doc_button = gr.Button("Export as .docx", elem_classes="custom-button")
+            export_pdf_button = gr.Button("Export as .pdf", elem_classes="custom-button")
+
+            download_output = gr.File(label="Download", visible=False)
+
 
     # Update the second dropdown based on the first dropdown's value
     domain.change(fn=update_dropdown, inputs=domain, outputs=task)
@@ -89,6 +73,12 @@ with gr.Blocks(theme=gr.themes.Soft(), css=css) as demo:
     # print (f"file: {file_input}, prompt: {user_prompt}")
     if (file_input or user_prompt):
         submit_button.click(fn=process_selection, inputs=[domain, task, user_prompt, file_input], outputs=output)
+
+    # if (output):
+    export_doc_button.click(fn=convert_markdown, inputs=[output], outputs=download_output)
+
+    # if (output):
+    export_pdf_button.click(fn=convert_markdown, inputs=[output], outputs=download_output )
 
 
 gr.close_all()
