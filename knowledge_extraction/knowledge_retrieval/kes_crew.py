@@ -21,7 +21,8 @@ class KESCrew:
         Task - determine the crew to run
         Domain - determine the RAG data to use (i.e similarity search scope)
         '''
-    
+        resp = SecurityReviewCrew().run(system_information=prompt, image_path=image_path)
+        return resp
 
         # if(task == "Security Review" or task == "Threat Modeling"):
         #     rag_context = similarity_search(prompt)
@@ -36,10 +37,6 @@ class KESCrew:
         #         </systemInformation>
         #     """
 
-        resp = SecurityReviewCrew().run(system_information=prompt, image_path=image_path)
-        return resp
-
-        
 
     # def run(self, domain: str, task: str, prompt: str, image_path):
     #     util.remove_file(temp_file)

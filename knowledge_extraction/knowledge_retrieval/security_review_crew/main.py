@@ -1,5 +1,6 @@
 import os
 from crewai import Crew, Process
+from rag_management.query_embedding import similarity_search
 from knowledge_retrieval import util
 from dotenv import load_dotenv
 load_dotenv()
@@ -48,9 +49,8 @@ class SecurityReviewCrew:
 
     else:
       return "Input information required"
-    
-    util.append_to_file(detail_output_file, output.raw)
 
+    util.append_to_file(detail_output_file, output.raw)
 
     trust_zone_identification_task = tasks.trust_boundary_identification_task(
       system_description=output.raw,
@@ -66,7 +66,9 @@ class SecurityReviewCrew:
     )
 
     output = threat_scenario_task.execute_sync()
+    # rag_context = similarity_search(output.raw)
     util.append_to_file(detail_output_file, output.raw)
+    # util.append_to_file(detail_output_file, rag_context)
 
     control_measure_task = tasks.control_measure_task(
       system_description=output.raw,

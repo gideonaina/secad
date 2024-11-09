@@ -55,7 +55,6 @@ class SecurityReviewAgent:
             llm = self.llm
         )
     
-
     def trust_zone_identification_agent(self):
         return Agent(
             role='Security  Architect',

@@ -12,6 +12,11 @@ CREATE TABLE security_requirements (
 \dt
 ```
 
+## Check tables
+```
+select * from langchain_pg_collection limit 5;
+```
+
 ## Embedding with langchain
 https://bugbytes.io/posts/vector-databases-pgvector-and-langchain/
 
@@ -26,7 +31,7 @@ psql -U langflow -d langflow
 ### host machine connection
 export PGPASSWORD='langflow'
 psql -U langflow -d langflow -h localhost
-
+  
 ### Similarity search query
 ```
 SELECT document, (embedding <=> '[0.008690234273672104, -0.020522210747003555]') as cos_dist

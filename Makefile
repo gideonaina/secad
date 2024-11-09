@@ -4,7 +4,6 @@
 COMPOSE_FILE := llm.docker-compose.yml
 RAG_COMPOSE_FILE := rag.docker-compose.yml
 DOCKER_COMPOSE := docker compose
-
 LOCAL_LLM ?= llama3
 
 
@@ -59,6 +58,12 @@ nuke:
 	@echo remove all containers and volumes on the host machine
 	docker stop $$(docker ps -aq) && \
 	docker volume rm $$(docker volume ls -q)
+	
+rag-ingest-file:
+	python knowledge_extraction/rag_management/data_prep.py -c $(COLLECTION) -f $(FILE)
+
+start-ui:
+	python knowledge_extraction/main.py
 
 notebook:
 	@echo start a Jupyter notebook
