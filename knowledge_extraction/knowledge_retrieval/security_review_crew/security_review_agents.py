@@ -93,20 +93,41 @@ class SecurityReviewAgent:
             llm = self.llm
         )
 
-    def controls_agent(self):
+    # def controls_agent(self):
+    #     return Agent(
+    #         role='Senior Security Architect',
+    #         backstory=dedent(f""" You are an experienced Senior Security
+    #                     with expertise in studying software system description, security objectives
+    #                     and threat scenario for each component to be able to identify countermeasure
+    #                      that will be the output of a threat modeling task.
+    #                     """),
+    #         goal=dedent(f""" Properly study the detailed information provided. It contains
+    #                     the system information and threat scenarios. Use that infromation to 
+    #                     generate well defined countermeansures for threat scenario.
+    #                     """),
+    #         verbose=True,
+    #         allow_delegation=True,
+    #         llm = self.llm
+    # )
+
+    def requirement_agent(self):
         return Agent(
             role='Senior Security Architect',
-            backstory=dedent(f""" You are an experienced Senior Security
-                        with expertise in studying software system description, security objectives
-                        and threat scenario for each component to be able to identify countermeasure
-                         that will be the output of a threat modeling task.
+            backstory=dedent(f""" 
+                        Act as a cyber security expert with more than 20 years of experience in 
+                        threat modeling. You apply your expertise to studying software system description, 
+                        security objectives and threat scenario for each component to be able to generate 
+                        security requirement that needs to be meet by the application to mitigate 
+                        each threat scenario.
                         """),
             goal=dedent(f""" Properly study the detailed information provided. It contains
-                        the system information and threat scenarios. Use that infromation to 
-                        generate well defined countermeansures for threat scenario.
+                        the system information and threat scenarios. Use that information to 
+                        generate well defined security requirement that follow a set of presentation
+                        format and rule.
                         """),
             verbose=True,
-            allow_delegation=True,
+            max_iter = 4,
+            allow_delegation=False,
             llm = self.llm
         )
         

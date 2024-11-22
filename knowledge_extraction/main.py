@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 domain_option = ["General", "Product Security", "Security Testing"]
-product_security_task = ["Security Review", "Threat Modeling"]
+product_security_task = ["Security Requirements", "Threat Modeling"]
 security_testing_task = ["Pentration Testing", "DAST"]
 general_task = ["General"]
 
@@ -58,7 +58,8 @@ with gr.Blocks(theme=gr.themes.Soft(), css=css) as demo:
             # background_info = gr.Textbox(lines=4, placeholder="Enter background information here...", label="Background Information")
             pdf = gr.Textbox(value="pdf", visible=False)
             docx = gr.Textbox(value="docx", visible=False)
-            output = gr.Textbox(label="Output", lines=17)
+            # output = gr.Textbox(label="Output", lines=17)
+            output = gr.Markdown(label="Output")
             export_doc_button = gr.Button("Export as .docx", elem_classes="custom-button")
             export_pdf_button = gr.Button("Export as .pdf", elem_classes="custom-button")
 

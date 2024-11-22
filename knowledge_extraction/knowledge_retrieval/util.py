@@ -1,6 +1,7 @@
 import os
 import base64
 from PIL import Image
+import json
 
 def remove_file(tmp_file):
     # Step 1: Delete the temp file if it exists
@@ -64,4 +65,34 @@ def process_file_base64(file):
         file_content = f.read()
         encoded_file = base64.b64encode(file_content).decode('utf-8')
     return encoded_file
+
+def json_to_security_requirement_table (security_requirements_json):
+    try:
+        security_requirements = json.loads(security_requirements_json)
+    except json.JSONDecodeError as e:
+        raise (f"JSON decoding error: {e}")
+
+    markdown_output =  "| Reference | Requirement | Details     | Threat Scenario | Risk Score | Status |\n"
+    markdown_output += "|-----------|-------------|-------------|-----------------|------------|--------|\n"
+    try:
+        # Access the list of threats under the "Risk Assessment" key
+        requirements = security_requirements.get("requirements", [])
+        for index, requirement in enumerate(requirements):
+            # Check if threat is a dictionary
+            if isinstance(requirement, dict):
+                reference = f"R.{index+1}"
+                req = requirement.get('requirement', '')
+                details = requirement.get('details', '')
+                threat_scenario = requirement.get('threat_scenario', '')
+                risk_score = requirement.get('risk_score', '')
+                status = requirement.get('status', '')
+
+                markdown_output += f"| {reference} | {req} | {details} | {threat_scenario} | {risk_score} | {status} |\n"
+            else:
+                raise TypeError(f"Expected a dictionary, got {type(requirement)}")
+    except Exception as e:
+        # Print the error message and type for debugging
+        # st.write(f"Error: {e}")
+        raise f"Error: {e}"
+    return markdown_output
 

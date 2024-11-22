@@ -70,16 +70,24 @@ class SecurityReviewCrew:
     util.append_to_file(detail_output_file, output.raw)
     # util.append_to_file(detail_output_file, rag_context)
 
-    control_measure_task = tasks.control_measure_task(
+    # control_measure_task = tasks.control_measure_task(
+    #   system_description=output.raw,
+    #   agent=agents.controls_agent()
+    # )
+
+    # output = control_measure_task.execute_sync()
+
+    requirement_task = tasks.requirement_generation_task(
       system_description=output.raw,
-      agent=agents.controls_agent()
+      agent=agents.requirement_agent()
     )
 
-    output = control_measure_task.execute_sync()
+    output = requirement_task.execute_sync()
+
     util.append_to_file(detail_output_file, output.raw)
     util.append_to_file(temp_file, output.raw)
 
-    return output.raw
+    return util.json_to_security_requirement_table(output.raw)
 
     
     # trust_zone_output = trust_zone_identification_task.output

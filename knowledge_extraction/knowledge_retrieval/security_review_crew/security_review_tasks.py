@@ -188,10 +188,42 @@ class SecurityReviewTasks():
             """
             ))
 
-    def control_measure_task(self, system_description, agent):
+    # def control_measure_task(self, system_description, agent):
+    #     return Task(description=dedent(f"""
+    #         <task>
+    #             Generate a list of well defined control or countermeasures for each threat scenario.
+    #         </task>
+                                       
+    #         <systemInformation>
+    #             {system_description}
+    #         </systemInformation>
+                   
+    #         <description>
+    #        Read the following from the system information provided as systemInformation xml 
+    #        tag that contains a list of threat scenarios:
+    #         Make sure to properly understanding the information above before performing the following tasks:
+    #         - For each threat scenarios generate one of more countermeasure.
+    #         - Provide information that will help implement the countermeasure.
+    #         </description>
+            
+    #         <notes>
+    #         {self.__tip_section()}
+    #         </notes>
+
+    #     """),
+    #         agent=agent,
+    #         expected_output= dedent(
+    #         f"""
+    #         Document your final output as a markdown all under a section with heading:
+    #         # Controls
+    #         """
+    #         ))
+    
+    def requirement_generation_task(self, system_description, agent):
         return Task(description=dedent(f"""
             <task>
-                Generate a list of well defined control or countermeasures for each threat scenario.
+                Generate a list of well defined security requirement that needs to be met by the
+                application to mitigate each threat scenario.
             </task>
                                        
             <systemInformation>
@@ -199,23 +231,77 @@ class SecurityReviewTasks():
             </systemInformation>
                    
             <description>
-           Read the following from the system information provided as systemInformation xml 
-           tag that contains a list of threat scenarios:
-            Make sure to properly understanding the information above before performing the following tasks:
-            - For each threat scenarios generate one of more countermeasure.
-            - Provide information that will help implement the countermeasure.
+            The output should contain the following information:
+            **Requirement**: This the security requirement for the threat scenario. 
+            It should follow the following rules:
+            * Requirements must have a coherent and extract 
+            structure that includes at least:   
+            * The entity in question must be clearly defined and prescribed. 
+            Examples include but are not limited to 'the system', 'the user',
+            'the administrator', 'the database', etc.
+            * The mandate level of requirement based on RFC 2119. Examples 'MUST',
+            'SHOULD', 'MAY' etc.
+            * The action / expectation from the entity.
+            * The system reference must be generic and not a specific vendor technology.
+            * The requirements must be written in the following manner: The 
+            Entity -> The Requirement Mandate Level -> The Requirement.
+            * An examples of well written requirement are:
+            - The system MUST encrypt all data in transit to prevent sniffing and spoofing attacks.
+            - The platform MUST block all executable files uploaded to it.
+            
+            **Details**: This should containe extra information that will provide context and 
+            understanding for the requirement. For example, if a requirement requires all
+            system to encrypt data in transit using TLS. The details will be: 
+            'Encrypting data in transit ensures that the data remains protected from exposure during transmission'
+            **Threat Scenario**: This the threat scenario for that the requirement is looking to mitigate.
+            **Risk Score**: The is a Common Vulnerability Scoring System (CVSS) risk score for the threat
+            based on your knowledge of the system.
+            
+            Output this information as JSON. Ensure the JSON response is correctly formatted and does not 
+            contain any additional text. Here is an example of the expected JSON response format:
+            {{
+            "requirements": [
+                {{
+                "requirement": "The system MUST encrypt all data in transit to prevent sniffing and spoofing attacks",
+                "details": "Encrypting data in transit ensures that the data remains protected from exposure during transmission.",
+                "threat_scenario": "An attacker intercepts the communication between the client (e.g., an application or user) and the server by positioning themselves as a proxy (man-in-the-middle)",
+                "risk_score": 6,
+                }},
+                {{
+                "requirement": "The platform MUST block all executable files uploaded to it.",
+                "details": "Blocking executable file on the platform prevents remote code execution attack.",
+                "threat_scenario": "An attacker uploads a malicious executable file disguised as a legitimate document or compressed archive to the platform. Due to insufficient validation, the platform accepts the file, allowing it to be stored or processed. Later, the malicious executable is either executed on the platform's servers or downloaded by unsuspecting users, potentially leading to system compromise or malware propagation.",
+                "risk_score": 8,
+                }}
+            ]
+            }}
             </description>
             
             <notes>
             {self.__tip_section()}
             </notes>
-
         """),
             agent=agent,
             expected_output= dedent(
             f"""
-            Document your final output as a markdown all under a section with heading:
-            # Controls
+            Output this information as JSON. Ensure the JSON response is correctly formatted and does not 
+            contain any additional text. Here is an example of the expected JSON response format:
+            {{
+            "requirements": [
+                {{
+                "requirement": "The system MUST encrypt all data in transit to prevent sniffing and spoofing attacks",
+                "details": "Encrypting data in transit ensures that the data remains protected from exposure during transmission.",
+                "threat_scenario": "An attacker intercepts the communication between the client (e.g., an application or user) and the server by positioning themselves as a proxy (man-in-the-middle)",
+                "risk_score": 6,
+                }},
+                {{
+                "requirement": "The platform MUST block all executable files uploaded to it.",
+                "details": "Blocking executable file on the platform prevents remote code execution attack.",
+                "threat_scenario": "An attacker uploads a malicious executable file disguised as a legitimate document or compressed archive to the platform. Due to insufficient validation, the platform accepts the file, allowing it to be stored or processed. Later, the malicious executable is either executed on the platform's servers or downloaded by unsuspecting users, potentially leading to system compromise or malware propagation.",
+                "risk_score": 8,
+                }}
+            ]
+            }}
             """
             ))
     
