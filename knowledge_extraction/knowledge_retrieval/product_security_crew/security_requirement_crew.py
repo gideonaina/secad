@@ -11,27 +11,14 @@ temp_file = os.getenv('TEMP_FILE')
 detail_output_file = os.getenv('DETAILED_OUTPUT')
 
 
-# print(f"OPENAI_API_BASE: {openai_api_base}")
-# print(f"OPENAI_API_KEY: {openai_api_key}")
+from .product_security_agents import ProductSecurityAgent
+from .product_security_tasks import ProductSecurityTask
 
-# if not openai_api_base:
-#     raise KeyError("OPENAI_API_BASE environment variable is not set")
-
-# if not openai_api_key:
-#     raise KeyError("OPENAI_API_KEY environment variable is not set")
-
-
-from .security_review_agents import SecurityReviewAgent
-from .security_review_tasks import SecurityReviewTasks
-
-class SecurityReviewCrew:
-
-  # def __init__(self, system_information):
-  #   self.system_information = system_information
+class SecurityRequirementCrew:
 
   def run(self, system_information, image_path):
-    agents = SecurityReviewAgent()
-    tasks = SecurityReviewTasks()
+    agents = ProductSecurityAgent()
+    tasks = ProductSecurityTask()
 
     if(image_path):
       arch_diagram_information = tasks.architecture_image_analysis_task(
@@ -68,14 +55,6 @@ class SecurityReviewCrew:
     output = threat_scenario_task.execute_sync()
     # rag_context = similarity_search(output.raw)
     util.append_to_file(detail_output_file, output.raw)
-    # util.append_to_file(detail_output_file, rag_context)
-
-    # control_measure_task = tasks.control_measure_task(
-    #   system_description=output.raw,
-    #   agent=agents.controls_agent()
-    # )
-
-    # output = control_measure_task.execute_sync()
 
     requirement_task = tasks.requirement_generation_task(
       system_description=output.raw,
@@ -88,27 +67,3 @@ class SecurityReviewCrew:
     util.append_to_file(temp_file, output.raw)
 
     return util.json_to_security_requirement_table(output.raw)
-
-    
-    # trust_zone_output = trust_zone_identification_task.output
-
-    # crew = Crew(
-    #   agents=[
-    #     architectural_analysis_agent, trust_zone_identification_agent
-    #   ],
-    #   tasks=[architectural_analysis_task, trust_zone_identification_task],
-    #   verbose=True,
-    #   process=Process.sequential
-    # )
-
-    # result = crew.kickoff()
-    # util.append_to_temp_file(result)
-    # return f"""
-    #   # analysis_output.raw
-    #   {result}
-    # """
-    # return result
-
-    # for task in crew.tasks:
-    #   output = task.execute_sync()
-    #   util.append_to_temp_file(output.raw)

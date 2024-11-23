@@ -4,7 +4,7 @@ from langchain_openai import ChatOpenAI
 from dotenv import load_dotenv
 load_dotenv()
 
-class KESModel:
+class LLMModel:
     def get_llm(self):
       return ChatOpenAI(
         model=os.getenv('OPENAI_MODEL_NAME'),

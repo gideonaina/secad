@@ -1,4 +1,4 @@
-from knowledge_retrieval.kes_model import KESModel
+from knowledge_retrieval.llm_model import LLMModel
 import os
 
 from dotenv import load_dotenv
@@ -11,6 +11,6 @@ openai_api_key = os.getenv('OPENAI_API_KEY')
 class GeneralCrew:
   
   def run(self, prompt):
-    llm = KESModel().get_llm()
+    llm = LLMModel().get_llm()
     response = llm.invoke(prompt)
     return response

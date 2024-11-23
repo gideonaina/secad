@@ -2,14 +2,14 @@ import os
 from crewai import Agent
 from langchain_openai import ChatOpenAI
 from textwrap import dedent
-from knowledge_retrieval.kes_model import KESModel
+from knowledge_retrieval.llm_model import LLMModel
 from crewai_tools import VisionTool
 
 vision_tool = VisionTool()
 
-class SecurityReviewAgent:
+class ProductSecurityAgent:
     def __init__(self) -> None:
-       kes_model = KESModel()
+       kes_model = LLMModel()
        self.llm = kes_model.get_llm()
        self.vision_llm = kes_model.get_vision_model()
 
@@ -93,22 +93,22 @@ class SecurityReviewAgent:
             llm = self.llm
         )
 
-    # def controls_agent(self):
-    #     return Agent(
-    #         role='Senior Security Architect',
-    #         backstory=dedent(f""" You are an experienced Senior Security
-    #                     with expertise in studying software system description, security objectives
-    #                     and threat scenario for each component to be able to identify countermeasure
-    #                      that will be the output of a threat modeling task.
-    #                     """),
-    #         goal=dedent(f""" Properly study the detailed information provided. It contains
-    #                     the system information and threat scenarios. Use that infromation to 
-    #                     generate well defined countermeansures for threat scenario.
-    #                     """),
-    #         verbose=True,
-    #         allow_delegation=True,
-    #         llm = self.llm
-    # )
+    def controls_agent(self):
+        return Agent(
+            role='Senior Security Architect',
+            backstory=dedent(f""" You are an experienced Senior Security
+                        with expertise in studying software system description, security objectives
+                        and threat scenario for each component to be able to identify countermeasure
+                         that will be the output of a threat modeling task.
+                        """),
+            goal=dedent(f""" Properly study the detailed information provided. It contains
+                        the system information and threat scenarios. Use that infromation to 
+                        generate well defined countermeansures for threat scenario.
+                        """),
+            verbose=True,
+            allow_delegation=True,
+            llm = self.llm
+    )
 
     def requirement_agent(self):
         return Agent(

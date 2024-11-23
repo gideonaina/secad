@@ -65,6 +65,9 @@ rag-ingest-file:
 start-ui:
 	python knowledge_extraction/main.py
 
+ui-gr:
+	gradio knowledge_extraction/main.py
+
 notebook:
 	@echo start a Jupyter notebook
 	docker network inspect ragnet >/dev/null 2>&1 || docker network create ragnet

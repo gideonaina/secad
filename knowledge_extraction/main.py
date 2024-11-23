@@ -1,6 +1,6 @@
 import gradio as gr
 import os
-from knowledge_retrieval.kes_crew import KESCrew
+from knowledge_retrieval.main_crew import MainCrew
 from util import convert_markdown
 from dotenv import load_dotenv
 load_dotenv()
@@ -21,10 +21,7 @@ def update_dropdown(selection):
 
 # Define a function to process the final selection
 def process_selection(domain, task, user_prompt, file_input):
-    # picture_base64 = process_file_base64(file_input)
-    # print(f"Parameters are: Domain: {domain}")
-    # print(f"picture post encoding: {picture_base64}")
-    return KESCrew().run(domain=domain, task=task, prompt=user_prompt, image_path=file_input)
+    return MainCrew().run(domain=domain, task=task, prompt=user_prompt, image_path=file_input)
     # return ""
 
 css = """ 

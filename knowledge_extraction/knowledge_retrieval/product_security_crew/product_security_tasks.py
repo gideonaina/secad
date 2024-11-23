@@ -4,7 +4,7 @@ from knowledge_retrieval import util
 from PIL import Image
 
 
-class SecurityReviewTasks():
+class ProductSecurityTask:
 
     def architecture_image_analysis_task(self, image_path, agent):
         # image_content = util.read_file(image_path)
@@ -188,36 +188,36 @@ class SecurityReviewTasks():
             """
             ))
 
-    # def control_measure_task(self, system_description, agent):
-    #     return Task(description=dedent(f"""
-    #         <task>
-    #             Generate a list of well defined control or countermeasures for each threat scenario.
-    #         </task>
+    def control_measure_task(self, system_description, agent):
+        return Task(description=dedent(f"""
+            <task>
+                Generate a list of well defined control or countermeasures for each threat scenario.
+            </task>
                                        
-    #         <systemInformation>
-    #             {system_description}
-    #         </systemInformation>
+            <systemInformation>
+                {system_description}
+            </systemInformation>
                    
-    #         <description>
-    #        Read the following from the system information provided as systemInformation xml 
-    #        tag that contains a list of threat scenarios:
-    #         Make sure to properly understanding the information above before performing the following tasks:
-    #         - For each threat scenarios generate one of more countermeasure.
-    #         - Provide information that will help implement the countermeasure.
-    #         </description>
+            <description>
+           Read the following from the system information provided as systemInformation xml 
+           tag that contains a list of threat scenarios:
+            Make sure to properly understanding the information above before performing the following tasks:
+            - For each threat scenarios generate one of more countermeasure.
+            - Provide information that will help implement the countermeasure.
+            </description>
             
-    #         <notes>
-    #         {self.__tip_section()}
-    #         </notes>
+            <notes>
+            {self.__tip_section()}
+            </notes>
 
-    #     """),
-    #         agent=agent,
-    #         expected_output= dedent(
-    #         f"""
-    #         Document your final output as a markdown all under a section with heading:
-    #         # Controls
-    #         """
-    #         ))
+        """),
+            agent=agent,
+            expected_output= dedent(
+            f"""
+            Document your final output as a markdown all under a section with heading:
+            # Controls
+            """
+            ))
     
     def requirement_generation_task(self, system_description, agent):
         return Task(description=dedent(f"""
