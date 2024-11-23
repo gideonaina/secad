@@ -95,4 +95,3 @@ def json_to_security_requirement_table (security_requirements_json):
         # st.write(f"Error: {e}")
         raise f"Error: {e}"
     return markdown_output
-

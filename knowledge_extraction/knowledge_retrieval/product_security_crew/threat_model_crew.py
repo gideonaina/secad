@@ -1,23 +1,26 @@
 import os
 from crewai import Crew, Process
 from rag_management.query_embedding import similarity_search
-from knowledge_retrieval import util
+from knowledge_retrieval import utils
 from dotenv import load_dotenv
 load_dotenv()
 
-openai_api_base = os.getenv('OPENAI_API_BASE')
-openai_api_key = os.getenv('OPENAI_API_KEY')
-temp_file = os.getenv('TEMP_FILE')
-detail_output_file = os.getenv('DETAILED_OUTPUT')
-
+temp_file = "/tmp/threat_model_crew_temp.md"
+export_file = "/tmp/threat_model_crew_exported"
+detail_output_file = "/tmp/crew_detail.md"
 
 from .product_security_agents import ProductSecurityAgent
 from .product_security_tasks import ProductSecurityTask
 
 class ThreatModelCrew:
+  def __init__(self):
+      utils.remove_file(temp_file)
+      utils.remove_file(f"{export_file}.docx")
+      utils.remove_file(f"{export_file}.pdf")
+      utils.remove_file(detail_output_file)
 
-  def run(self, system_information, image_path):
-    agents = ProductSecurityAgent()
+  def run(self, system_information, image_path, main_model, vision_model):
+    agents = ProductSecurityAgent(main_model, vision_model)
     tasks = ProductSecurityTask()
 
     if(image_path):
@@ -37,7 +40,7 @@ class ThreatModelCrew:
     else:
       return "Input information required"
 
-    util.append_to_file(detail_output_file, output.raw)
+    utils.append_to_file(detail_output_file, output.raw)
 
     trust_zone_identification_task = tasks.trust_boundary_identification_task(
       system_description=output.raw,
@@ -45,7 +48,7 @@ class ThreatModelCrew:
     )
 
     output = trust_zone_identification_task.execute_sync()
-    util.append_to_file(detail_output_file, output.raw)
+    utils.append_to_file(detail_output_file, output.raw)
 
     threat_scenario_task = tasks.threat_scenario_creation_task(
       system_description=output.raw,
@@ -54,7 +57,7 @@ class ThreatModelCrew:
 
     output = threat_scenario_task.execute_sync()
     # rag_context = similarity_search(output.raw)
-    util.append_to_file(detail_output_file, output.raw)
+    utils.append_to_file(detail_output_file, output.raw)
     # util.append_to_file(detail_output_file, rag_context)
 
     control_measure_task = tasks.control_measure_task(
@@ -62,8 +65,8 @@ class ThreatModelCrew:
       agent=agents.controls_agent()
     )
     output = control_measure_task.execute_sync()
-    util.append_to_file(detail_output_file, output.raw)
-    util.append_to_file(temp_file, output.raw)
+    utils.append_to_file(detail_output_file, output.raw)
+    utils.append_to_file(temp_file, output.raw)
 
     return output.raw
 

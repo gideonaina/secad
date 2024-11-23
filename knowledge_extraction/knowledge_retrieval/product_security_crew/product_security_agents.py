@@ -2,16 +2,14 @@ import os
 from crewai import Agent
 from langchain_openai import ChatOpenAI
 from textwrap import dedent
-from knowledge_retrieval.llm_model import LLMModel
 from crewai_tools import VisionTool
 
 vision_tool = VisionTool()
 
 class ProductSecurityAgent:
-    def __init__(self) -> None:
-       kes_model = LLMModel()
-       self.llm = kes_model.get_llm()
-       self.vision_llm = kes_model.get_vision_model()
+    def __init__(self, main_model, vision_model) -> None:
+       self.llm = main_model
+       self.vision_llm = vision_model
 
 
     def system_information_agent(self):

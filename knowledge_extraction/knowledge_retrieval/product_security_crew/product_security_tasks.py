@@ -1,6 +1,6 @@
 from crewai import Task
 from textwrap import dedent
-from knowledge_retrieval import util
+from knowledge_retrieval import utils
 from PIL import Image
 
 

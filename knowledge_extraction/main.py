@@ -1,5 +1,6 @@
 import gradio as gr
 import os
+from langchain_openai import ChatOpenAI
 from knowledge_retrieval.main_crew import MainCrew
 from util import convert_markdown
 from dotenv import load_dotenv
@@ -20,9 +21,27 @@ def update_dropdown(selection):
         return gr.update(choices=general_task)
 
 # Define a function to process the final selection
-def process_selection(domain, task, user_prompt, file_input):
-    return MainCrew().run(domain=domain, task=task, prompt=user_prompt, image_path=file_input)
-    # return ""
+def process_selection(task, user_prompt, file_input, temp_slider):
+    # model_info = {
+    #     "model_provider": "OPENAPI",
+    #     "model_name": os.getenv('OPENAI_MODEL_NAME'),
+    #     "base_url": os.getenv('OPENAI_API_BASE'),
+    #     "model_temp": temp_slider
+    # }
+
+    main_model = ChatOpenAI(
+        model=os.getenv('OPENAI_MODEL_NAME'),
+        base_url=os.getenv('OPENAI_API_BASE'),
+        temperature=temp_slider
+    )
+
+    vision_model = ChatOpenAI(
+        model=os.getenv('OPENAI_VISION_MODEL'),
+        base_url=os.getenv('OPENAI_API_BASE'),
+        temperature=temp_slider
+    )
+    
+    return MainCrew().run(main_model=main_model, vision_model=vision_model, task=task, prompt=user_prompt, image_path=file_input)
 
 css = """ 
     .small-file-upload input[type="file"] {
@@ -41,6 +60,13 @@ css = """
 # Create the Gradio interface
 with gr.Blocks(theme=gr.themes.Soft(), css=css) as demo:
     gr.Markdown("## KES")
+    temp_slider = gr.Slider(
+            0, 1,
+            value=0.05,
+            step=0.01,
+            interactive=True,
+            label="Model Temperature",
+        )
     domain = gr.Dropdown(choices=domain_option, label="Select Domain", value=domain_option[0])
     task = gr.Dropdown(choices=general_task, label="Select Task", value=general_task[0])
     with gr.Row():
@@ -70,7 +96,7 @@ with gr.Blocks(theme=gr.themes.Soft(), css=css) as demo:
     # submit_button.click(fn=process_selection, inputs=[domain, task, background_info], outputs=output)
     # print (f"file: {file_input}, prompt: {user_prompt}")
     if (file_input or user_prompt):
-        submit_button.click(fn=process_selection, inputs=[domain, task, user_prompt, file_input], outputs=output)
+        submit_button.click(fn=process_selection, inputs=[task, user_prompt, file_input, temp_slider], outputs=output)
 
     # if (output):
     export_doc_button.click(fn=convert_markdown, inputs=[output], outputs=download_output)
