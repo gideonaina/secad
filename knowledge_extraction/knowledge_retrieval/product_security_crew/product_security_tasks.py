@@ -201,21 +201,45 @@ class ProductSecurityTask:
             <description>
            Read the following from the system information provided as systemInformation xml 
            tag that contains a list of threat scenarios:
-            Make sure to properly understanding the information above before performing the following tasks:
-            - For each threat scenarios generate one of more countermeasure.
-            - Provide information that will help implement the countermeasure.
+            Make sure to properly understanding the information above before providing the 
+            following information for each threat scenario:
+            - Threat Type: Generate the threat type.
+            - Threat Scenario: detailed infromation about the threat scenario.
+            - Control: Generate one or more countermeasure that can be implemented to mitigate the threat.
+            - Potential Imapct: Provide information about potential impact of the threat scenario on the system.
             </description>
             
             <notes>
             {self.__tip_section()}
             </notes>
-
         """),
             agent=agent,
+            # expected_output= dedent(
+            # f"""
+            # Document your final output as a markdown all under a section with heading:
+            # # Controls
+            # """
+            # )
             expected_output= dedent(
             f"""
-            Document your final output as a markdown all under a section with heading:
-            # Controls
+            Output this information as JSON. Ensure the JSON response is correctly formatted and does not 
+            contain any additional text. Here is an example of the expected JSON response format:
+                {{
+                    "threat_model": [
+                        {{
+                        "threat_type": "Spoofing",
+                        "threat_scenario": "Example Scenario 1",
+                        "control": "control 1"
+                        "impact": "Example Potential Impact 1"
+                        }},
+                        {{
+                        "threat_type": "Tampering and Man-in-the-middle (MIM) attack.",
+                        "threat_scenario": "Example Scenario 2",
+                        "control": "control 2"
+                        "impact": "Example Potential Impact 2"
+                        }}
+                    ]
+                }}
             """
             ))
     

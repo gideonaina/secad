@@ -28,8 +28,7 @@ class ProductSecurityAgent:
             allow_delegation=True,
             tools=[vision_tool],
             llm = self.vision_llm
-        )
-    
+    )
     
     def architectural_analysis_agent(self):
         return Agent(

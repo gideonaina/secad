@@ -13,6 +13,11 @@ from .product_security_agents import ProductSecurityAgent
 from .product_security_tasks import ProductSecurityTask
 
 class SecurityRequirementCrew:
+  def __init__(self):
+    utils.remove_file(temp_file)
+    utils.remove_file(f"{export_file}.docx")
+    utils.remove_file(f"{export_file}.pdf")
+    utils.remove_file(detail_output_file)
 
   def run(self, system_information, image_path, main_model, vision_model):
     agents = ProductSecurityAgent(main_model, vision_model)
@@ -64,4 +69,46 @@ class SecurityRequirementCrew:
     utils.append_to_file(detail_output_file, output.raw)
     utils.append_to_file(temp_file, output.raw)
 
-    return utils.json_to_security_requirement_table(output.raw)
+    return output.raw
+  
+  
+  def execute(self, main_model, system_information):
+    agents = ProductSecurityAgent(main_model, main_model)
+    tasks = ProductSecurityTask()
+
+    if (system_information):
+      requirement_task = tasks.requirement_generation_task(
+        system_description=system_information,
+        agent=agents.requirement_agent()
+      )
+
+      output = requirement_task.execute_sync()
+      utils.append_to_file(detail_output_file, output.raw)
+      utils.append_to_file(temp_file, output.raw)
+      
+      return output.raw
+
+    else:
+      return "Input information provided required"
+
+    # utils.append_to_file(detail_output_file, output.raw)
+
+    # trust_zone_identification_task = tasks.trust_boundary_identification_task(
+    #   system_description=output.raw,
+    #   agent=agents.trust_zone_identification_agent()
+    # )
+
+    # output = trust_zone_identification_task.execute_sync()
+    # utils.append_to_file(detail_output_file, output.raw)
+
+    # threat_scenario_task = tasks.threat_scenario_creation_task(
+    #   system_description=output.raw,
+    #   agent=agents.threat_scenario_agent()
+    # )
+
+    # output = threat_scenario_task.execute_sync()
+    # # rag_context = similarity_search(output.raw)
+    # utils.append_to_file(detail_output_file, output.raw)
+
+
+

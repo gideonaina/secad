@@ -1,7 +1,11 @@
 import os
 import base64
+import requests
 from PIL import Image
 import json
+from langchain_openai import ChatOpenAI
+from langchain.llms import Ollama
+
 
 def remove_file(tmp_file):
     # Step 1: Delete the temp file if it exists
@@ -95,3 +99,38 @@ def json_to_security_requirement_table (security_requirements_json):
         # st.write(f"Error: {e}")
         raise f"Error: {e}"
     return markdown_output
+
+def get_llm_model(model_info: dict):
+    # api_key=os.getenv('OPENAI_API_KEY')
+    # print(f"******** Model info - {model_info}. API Key - {api_key}")
+    model_provider = model_info['model_provider']
+
+    if model_provider == "OpenAI API":
+        temp_slider = model_info['model_temp']
+        api_key=os.getenv('OPENAI_API_KEY')
+        model_name = model_info['selected_model']
+
+        print(f"******** temp - {temp_slider}, model - {model_name}.")
+            
+        return ChatOpenAI(
+            model=model_name,
+            api_key=api_key,
+            temperature=temp_slider
+        )
+
+    if model_provider == "Ollama":
+        base_url=os.getenv('OLLAMA_BASE_URL'),
+        # Make a request to the Ollama API to get the list of available models
+        try:
+            response = requests.get(f"{base_url}/api/tags")
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            response = None
+            raise (f"Ollama endpoint not found, please select a different model provider. Error - {e}")
+        
+        if response:
+            return Ollama(
+                model=model_info['selected_model'],
+                temperature=model_info['model_temp'],
+                base_url=base_url
+            )

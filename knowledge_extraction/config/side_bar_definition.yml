@@ -1,0 +1,89 @@
+sidebar:
+  models:
+    types:
+      - "OpenAI API"
+      - "Azure OpenAI Service"
+      - "Google AI API"
+      - "Mistral API"
+      - "Ollama"
+    key: "model_provider"
+
+  open_api:
+    instructions: |
+      1. Enter your [OpenAI API key](https://platform.openai.com/account/api-keys) and chosen model below 🔑
+      2. Provide details of the application that you would like to threat model 📝
+      3. Generate a threat list, attack tree and/or mitigating controls for your application 🚀
+    connection:
+      label: "Enter your OpenAI API key:"
+      default_value: "openai_api_key"
+      model_selection:
+        label: "Select the model you would like to use:"
+        options:
+          - "gpt-3.5-turbo"
+          - "gpt-4o"
+          - "gpt-4o-mini"
+          - "gpt-4-turbo"
+        default: "gpt-4o"
+    modal:
+      upload_file_types:
+        - "jpg"
+        - "jpeg"
+        - "png"
+  
+  azure_openai_api:
+    instructions: |
+      1. Enter your Azure OpenAI API key, endpoint and deployment name below 🔑
+      2. Provide details of the application that you would like to threat model  📝
+      3. Generate a threat list, attack tree and/or mitigating controls for your application 🚀
+    connection:
+      label: "Azure OpenAI API key:"
+      default_value: "azure_openai_api_key"
+      model_selection:
+        label: "Select the model you would like to use:"
+
+  google_ai:
+    instructions: |
+      1. Enter your [Google AI API key](https://makersuite.google.com/app/apikey) and chosen model below 🔑
+      2. Provide details of the application that you would like to threat model  📝
+      3. Generate a threat list, attack tree and/or mitigating controls for your application 🚀
+    connection:
+      label: "x"
+      default_value: "x"
+      model_selection:
+        label: "x"
+        options:
+          - "gemini-1.5-pro-latest"
+          - "gemini-1.5-pro"
+        default: "gemini-1.5-pro-latest"
+  
+  mistral_ai:
+    instructions: |
+      1. Enter your [Mistral API key](https://console.mistral.ai/api-keys/) and chosen model below 🔑
+      2. Provide details of the application that you would like to threat model  📝
+      3. Generate a threat list, attack tree and/or mitigating controls for your application 🚀
+    connection:
+      label: "x"
+      default_value: "x"
+      model_selection:
+        label: "x"
+        options:
+          - "mistral-small-latest"
+          - "mistral-large-latest"
+        default: "mistral-small-latest"
+  
+  ollama:
+    instructions: |
+      ******
+      ******
+    connection:
+      label: "x"
+      default_value: "x"
+      model_selection:
+        label: "x"
+        options:
+          - "x"
+          - "x"
+        default: "x"
+
+
+  

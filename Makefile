@@ -68,6 +68,9 @@ start-ui:
 ui-gr:
 	gradio knowledge_extraction/main.py
 
+ui-st:
+	streamlit run knowledge_extraction/main_st.py
+
 notebook:
 	@echo start a Jupyter notebook
 	docker network inspect ragnet >/dev/null 2>&1 || docker network create ragnet
