@@ -2,7 +2,7 @@ import gradio as gr
 import os
 from langchain_openai import ChatOpenAI
 from knowledge_retrieval.main_crew import MainCrew
-from util import convert_markdown
+from ui.utils import convert_markdown
 from dotenv import load_dotenv
 load_dotenv()
 

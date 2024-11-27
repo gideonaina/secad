@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='knowledge_extraction',
-    version='0.1',
+    name='kes',
+    version='0.1.0',
     packages=find_packages(),
 )

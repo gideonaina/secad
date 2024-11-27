@@ -4,15 +4,17 @@ import base64
 import requests
 import streamlit as st
 import streamlit.components.v1 as components
+from pathlib import Path
 from github import Github
 from collections import defaultdict
 import re
 import os
 from dotenv import load_dotenv
 import yaml
-from ui.streamlit_ui.utils import get_model_provider
-from ui.streamlit_ui import threat_model_tab, security_review_tab
+from ui.utils import get_model_provider
+from product_security_section import threat_model_tab, security_review_tab
 
+load_dotenv()
 
 # def load_env_variables():
 #     # Try to load from .env file
@@ -68,11 +70,15 @@ st.sidebar.header("Security Advisor")
 
 # Add instructions on how to use the app to the sidebar
 # st.sidebar.header("How to use STRIDE GPT")
+root_dir = Path(__file__).parent.parent
+config_path = os.path.join(root_dir, "config/side_bar_definition.yml")
 
-with open("knowledge_extraction/config/side_bar_definition.yml", "r") as file:
+with open(config_path, "r") as file:
     data = yaml.safe_load(file)
 
 with st.sidebar:
+    st.markdown("---")
+    st.markdown("## Model Configuration")
     # Add model selection input field to the sidebar
     model_provider = st.selectbox(
         "Select your preferred model provider:",

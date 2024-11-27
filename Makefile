@@ -58,18 +58,6 @@ nuke:
 	@echo remove all containers and volumes on the host machine
 	docker stop $$(docker ps -aq) && \
 	docker volume rm $$(docker volume ls -q)
-	
-rag-ingest-file:
-	python knowledge_extraction/rag_management/data_prep.py -c $(COLLECTION) -f $(FILE)
-
-start-ui:
-	python knowledge_extraction/main.py
-
-ui-gr:
-	gradio knowledge_extraction/main.py
-
-ui-st:
-	streamlit run knowledge_extraction/main_st.py
 
 notebook:
 	@echo start a Jupyter notebook
