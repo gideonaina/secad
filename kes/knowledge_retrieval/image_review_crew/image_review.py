@@ -1,8 +1,10 @@
-from langchain_community.chat_models import ChatOpenAI
 import base64
-from crewai import Agent, Task
 from textwrap import dedent
+
+from crewai import Agent, Task
 from crewai_tools import VisionTool
+from langchain_community.chat_models import ChatOpenAI
+
 
 class ImageReview:
     # def get_architectural_diagram_info(self, image_path):
@@ -65,11 +67,11 @@ class ImageReview:
         # prompt = PromptTemplate(input_variables=["image_description"], template=prompt_template)
         return Agent(
             role='Software Architect',
-            backstory=dedent(f""" You are an expert in software architecture
+            backstory=dedent(""" You are an expert in software architecture
                         with expertise in understanding the details of a software 
                         by looking at the system software architectural diagram.
                         """),
-            goal=dedent(f"""Properly Analyze the software architectural diagram,
+            goal=dedent("""Properly Analyze the software architectural diagram,
                         break it down into its components, connections between 
                         components and communication protocols. This information 
                         will be used as input into a threat modeling task.
@@ -102,7 +104,7 @@ class ImageReview:
         """),
             agent=agent,
             expected_output= dedent(
-            f"""
+            """
             Your final answer must be a detailed report about the system.
             Document your final output as a markdown containing the following sections and heading
             - Detailed system description and it general function. The heading of this section 

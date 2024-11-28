@@ -1,18 +1,14 @@
 #main.py
 
-import base64
-import requests
-import streamlit as st
-import streamlit.components.v1 as components
-from pathlib import Path
-from github import Github
-from collections import defaultdict
-import re
 import os
-from dotenv import load_dotenv
+from pathlib import Path
+
+import streamlit as st
 import yaml
+from dotenv import load_dotenv
+from product_security_section import security_review_tab, threat_model_tab
+
 from ui.utils import get_model_provider
-from product_security_section import threat_model_tab, security_review_tab
 
 load_dotenv()
 

@@ -1,10 +1,11 @@
+import argparse
+import os
+
+import psycopg
+from dotenv import load_dotenv
 from langchain_openai import OpenAIEmbeddings
 from langchain_postgres.vectorstores import PGVector
-import os
-import argparse
-import psycopg
 
-from dotenv import load_dotenv
 load_dotenv()
 
 

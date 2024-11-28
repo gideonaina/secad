@@ -1,7 +1,6 @@
-from crewai import Task
 from textwrap import dedent
-from knowledge_retrieval import utils
-from PIL import Image
+
+from crewai import Task
 
 
 class ProductSecurityTask:
@@ -32,7 +31,7 @@ class ProductSecurityTask:
         """),
             agent=agent,
             expected_output= dedent(
-            f"""
+            """
             Your final answer must be a detailed report about the system.
             Document your final output as a markdown containing the following sections and heading
             - Detailed system description and it general function. The heading of this section 
@@ -85,7 +84,7 @@ class ProductSecurityTask:
         """),
             agent=agent,
             expected_output= dedent(
-            f"""
+            """
             Your final answer must be a detailed report about the system.
             Document your final output as a markdown containing the following sections and heading
             - Data Dictionary: This information is a comprehensive and structured reference that 
@@ -125,7 +124,7 @@ class ProductSecurityTask:
         """),
             agent=agent,
             expected_output= dedent(
-            f"""
+            """
             Document your final output as a markdown all in a section with heading
             Trust Boundaries.
             Your final output must be a detailed and formated as a readable markdown.
@@ -176,7 +175,7 @@ class ProductSecurityTask:
         """),
             agent=agent,
             expected_output= dedent(
-            f"""
+            """
             Document your final output as a markdown all under a section with heading:
             # Threat Scenarios
             - Each scenario must be captured in the following format "<Threat Actor> can
@@ -221,25 +220,25 @@ class ProductSecurityTask:
             # """
             # )
             expected_output= dedent(
-            f"""
+            """
             Output this information as JSON. Ensure the JSON response is correctly formatted and does not 
             contain any additional text. Here is an example of the expected JSON response format:
-                {{
+                {
                     "threat_model": [
-                        {{
+                        {
                         "threat_type": "Spoofing",
                         "threat_scenario": "Example Scenario 1",
                         "control": "control 1"
                         "impact": "Example Potential Impact 1"
-                        }},
-                        {{
+                        },
+                        {
                         "threat_type": "Tampering and Man-in-the-middle (MIM) attack.",
                         "threat_scenario": "Example Scenario 2",
                         "control": "control 2"
                         "impact": "Example Potential Impact 2"
-                        }}
+                        }
                     ]
-                }}
+                }
             """
             ))
     
@@ -307,25 +306,25 @@ class ProductSecurityTask:
         """),
             agent=agent,
             expected_output= dedent(
-            f"""
+            """
             Output this information as JSON. Ensure the JSON response is correctly formatted and does not 
             contain any additional text. Here is an example of the expected JSON response format:
-            {{
+            {
             "requirements": [
-                {{
+                {
                 "requirement": "The system MUST encrypt all data in transit to prevent sniffing and spoofing attacks",
                 "details": "Encrypting data in transit ensures that the data remains protected from exposure during transmission.",
                 "threat_scenario": "An attacker intercepts the communication between the client (e.g., an application or user) and the server by positioning themselves as a proxy (man-in-the-middle)",
                 "risk_score": 6,
-                }},
-                {{
+                },
+                {
                 "requirement": "The platform MUST block all executable files uploaded to it.",
                 "details": "Blocking executable file on the platform prevents remote code execution attack.",
                 "threat_scenario": "An attacker uploads a malicious executable file disguised as a legitimate document or compressed archive to the platform. Due to insufficient validation, the platform accepts the file, allowing it to be stored or processed. Later, the malicious executable is either executed on the platform's servers or downloaded by unsuspecting users, potentially leading to system compromise or malware propagation.",
                 "risk_score": 8,
-                }}
+                }
             ]
-            }}
+            }
             """
             ))
     

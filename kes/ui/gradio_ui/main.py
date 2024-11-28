@@ -1,9 +1,12 @@
-import gradio as gr
 import os
+
+import gradio as gr
+from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
+
 from knowledge_retrieval.main_crew import MainCrew
 from ui.utils import convert_markdown
-from dotenv import load_dotenv
+
 load_dotenv()
 
 domain_option = ["General", "Product Security", "Security Testing"]

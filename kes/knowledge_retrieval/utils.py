@@ -1,10 +1,7 @@
-import os
 import base64
-import requests
+import os
+
 from PIL import Image
-import json
-from langchain_openai import ChatOpenAI
-from langchain_community.llms import Ollama
 
 
 def remove_file(tmp_file):
@@ -25,7 +22,7 @@ def read_file(file_path):
         return content
     except FileNotFoundError:
         raise f"Error: The file '{file_path}' was not found."
-    except Exception as e:
+    except Exception:
         raise f"Error: {file_path}"
     
 def image_parsing():

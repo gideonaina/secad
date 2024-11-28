@@ -1,10 +1,12 @@
+import os
+
+from dotenv import load_dotenv
+
+from knowledge_retrieval import utils
+
 from .product_security_crew.security_requirement_crew import SecurityRequirementCrew
 from .product_security_crew.threat_model_crew import ThreatModelCrew
-from rag_management.query_embedding import similarity_search
-from .general.general_crew import GeneralCrew
-from knowledge_retrieval import utils
-import os
-from dotenv import load_dotenv
+
 load_dotenv()
 
 temp_file = os.getenv('TEMP_FILE')

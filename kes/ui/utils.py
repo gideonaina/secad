@@ -1,18 +1,18 @@
 import base64
-from PIL import Image
 import json
+import os
+import re
+from collections import defaultdict
+
+import pypandoc
 import requests
 import streamlit as st
-import base64
-import re
-from github import Github
-from collections import defaultdict
-import pypandoc
-import os
-from langchain_openai import ChatOpenAI
-from langchain_community.llms import Ollama
-
 from dotenv import load_dotenv
+from github import Github
+from langchain_community.llms import Ollama
+from langchain_openai import ChatOpenAI
+from PIL import Image
+
 load_dotenv()
 
 temp_file = os.getenv('TEMP_FILE')

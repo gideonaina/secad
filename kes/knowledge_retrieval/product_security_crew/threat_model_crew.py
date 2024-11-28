@@ -1,16 +1,20 @@
-import os
-from crewai import Crew, Process
-from rag_management.query_embedding import similarity_search
-from knowledge_retrieval import utils
 from dotenv import load_dotenv
+
+from knowledge_retrieval import utils
+from knowledge_retrieval.product_security_crew.product_security_agents import (
+  ProductSecurityAgent,
+)
+from knowledge_retrieval.product_security_crew.product_security_tasks import (
+  ProductSecurityTask,
+)
+
 load_dotenv()
 
 temp_file = "/tmp/threat_model_crew_temp.md"
 export_file = "/tmp/threat_model_crew_exported"
 detail_output_file = "/tmp/crew_detail.md"
 
-from .product_security_agents import ProductSecurityAgent
-from .product_security_tasks import ProductSecurityTask
+
 
 class ThreatModelCrew:
   def __init__(self):

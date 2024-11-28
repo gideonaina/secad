@@ -47,5 +47,5 @@ dev = [
 [tool.ruff]
 line-length = 88  # Maximum line length (default: 88)
 select = ["E", "F", "I"]  # Specify rule codes (e.g., E for errors, F for flake8)
-# ignore = ["E501"]  # Ignore specific rules (e.g., E501: line too long)
+ignore = ["E501"]  # Ignore specific rules (e.g., E501: line too long)
 exclude = ["migrations/"]  # Exclude specific directories or files

@@ -1,7 +1,9 @@
+import os
+
+from dotenv import load_dotenv
 from langchain_openai import OpenAIEmbeddings
 from langchain_postgres.vectorstores import PGVector
-import os
-from dotenv import load_dotenv
+
 load_dotenv()
 
  

@@ -1,12 +1,13 @@
-import boto3
-# from langchain.document_loaders import TextLoader  # Adjust this import based on your actual loader
-from langchain_community.document_loaders import TextLoader
-from langchain_community.document_loaders import PyPDFLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-import os
 import argparse
+import os
+
+import boto3
 from dotenv import load_dotenv
 from embedding_creation import create_embeddings
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+# from langchain.document_loaders import TextLoader  # Adjust this import based on your actual loader
+from langchain_community.document_loaders import PyPDFLoader, TextLoader
 
 load_dotenv()
 
