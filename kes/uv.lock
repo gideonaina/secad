@@ -1842,6 +1842,11 @@ dependencies = [
     { name = "unstructured" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "ruff" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "argparse", specifier = ">=1.4.0" },
@@ -1865,6 +1870,9 @@ requires-dist = [
     { name = "tools", specifier = "==0.1.9" },
     { name = "unstructured", specifier = "==0.10.25" },
 ]
+
+[package.metadata.requires-dev]
+dev = [{ name = "ruff", specifier = ">=0.8.0" }]
 
 [[package]]
 name = "kubernetes"

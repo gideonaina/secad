@@ -4,7 +4,7 @@ import requests
 from PIL import Image
 import json
 from langchain_openai import ChatOpenAI
-from langchain.llms import Ollama
+from langchain_community.llms import Ollama
 
 
 def remove_file(tmp_file):

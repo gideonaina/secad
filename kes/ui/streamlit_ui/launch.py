@@ -43,15 +43,9 @@ with st.sidebar:
         help="Select the model provider you would like to use.",
     )
 
-    print(f"********** model provider - {model_provider}")
-
     get_model_provider(model_provider, data)
-
     model_temp = st.slider(label="Model Temperature", min_value=0.0, max_value=1.0, value=0.05, step=0.05, key="model_temp")
 
-# ------------------ Main App UI ------------------ #
-
-# tab1, tab2 = st.tabs(["Threat Model", "Security Requirements"])
 tab1, tab2 = st.tabs(["Threat Model", "Security Requirements"])
 selected_model = st.session_state.get('selected_model', '')
 

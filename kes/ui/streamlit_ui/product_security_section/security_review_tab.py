@@ -8,8 +8,7 @@ from knowledge_retrieval.product_security_crew.security_requirement_crew import 
 def get_tab(data, selected_model, model_provider):
     st.markdown("""
 A security requirement is a specific, measurable, and enforceable condition or guideline that defines how an application, system,
-or process must operate to ensure its security. Security requirements are used to mitigate risks, prevent vulnerabilities, 
-and protect assets such as data, infrastructure, and users from threats and malicious activities.
+or process must operate to ensure its security.
 """)
     st.markdown("""---""")
 
@@ -21,45 +20,34 @@ and protect assets such as data, infrastructure, and users from threats and mali
         print(f"Threat model state - {tm}")
         if 'threat_model' in st.session_state and st.session_state['threat_model']:
             with st.spinner("Generating Security Requirements..."):
-                # SecurityRequirementCrew()
-                max_retries = 1
-                retry_count = 0
 
-                while retry_count < max_retries:
-                    try:
-                        model_info = {
-                            'model_temp': model_temp,
-                            'selected_model': selected_model,
-                            'model_provider': model_provider
-                        }
-                        print("*******sec req********* before getting LLM")
-                        llm_model = get_llm_model(model_info)
-                        threat_model = st.session_state.get('threat_model')
-                        app_input = st.session_state.get('app_input')
-                        print("*******sec req********* BEFORE MODEL RUN IN SPINNER LOOP")
-                        system_information = f"""
-                        ## System Information
-                        {app_input}
+                try:
+                    model_info = {
+                        'model_temp': model_temp,
+                        'selected_model': selected_model,
+                        'model_provider': model_provider
+                    }
+                    llm_model = get_llm_model(model_info)
+                    threat_model = st.session_state.get('threat_model')
+                    app_input = st.session_state.get('app_input')
 
-                        ## Threat Model
-                        {threat_model}
-                        """
-                        print(f"******** System Info {system_information}")
+                    system_information = f"""
+                    ## System Information
+                    {app_input}
 
-                        security_requirements = SecurityRequirementCrew().execute(llm_model, system_information=system_information)
-                        st.session_state['security_requirements'] = security_requirements
-                        break  # Exit the loop if successful
-                    except Exception as e:
-                        retry_count += 1
-                        if retry_count == max_retries:
-                            st.error(f"Error generating security requirements after {max_retries} attempts: {e}")
-                            security_requirements = []
-                        else:
-                            st.warning(f"Error generating security requirements. Retrying attempt {retry_count+1}/{max_retries}...")
+                    ## Threat Model
+                    {threat_model}
+                    """
+                    security_requirements = SecurityRequirementCrew().execute(llm_model, system_information=system_information)
+                    st.session_state['security_requirements'] = security_requirements
 
-                print(f"******** sec req - before converting output to json {security_requirements}")
+                except Exception as e:
+                    st.error(f"Error generating security requirements. Error: {e}")
+                    security_requirements = []
+
                 security_requirements_markdown = json_to_security_requirement_table(security_requirements)
                 st.markdown(security_requirements_markdown)
+                
             st.download_button(
                 label="Download Security Requirements",
                 data=security_requirements_markdown,

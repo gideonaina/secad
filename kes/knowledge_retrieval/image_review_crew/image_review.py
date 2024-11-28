@@ -1,6 +1,4 @@
-from langchain import LLMChain
-from langchain.chat_models import ChatOpenAI 
-from langchain.prompts import PromptTemplate
+from langchain_community.chat_models import ChatOpenAI
 import base64
 from crewai import Agent, Task
 from textwrap import dedent
@@ -30,29 +28,30 @@ class ImageReview:
  
 
         # Step 2: Define the prompt template
-        prompt_template = """
-        You are an expert in software architecture. 
-        Please describe the content of the following software architectural diagram: {image_description}.
-        """
+        # prompt_template = """
+        # You are an expert in software architecture. 
+        # Please describe the content of the following software architectural diagram: {image_description}.
+        # """
 
-        # Step 3: Create a LangChain prompt
-        prompt = PromptTemplate(input_variables=["image_description"], template=prompt_template)
+        # # Step 3: Create a LangChain prompt
+        # prompt = PromptTemplate(input_variables=["image_description"], template=prompt_template)
 
-        # Step 4: Initialize the ChatOpenAI model
-        llm = ChatOpenAI(model_name="gpt-4")  # Specify the model as gpt-3.5-turbo or gpt-4
+        # # Step 4: Initialize the ChatOpenAI model
+        # llm = ChatOpenAI(model_name="gpt-4")  # Specify the model as gpt-3.5-turbo or gpt-4
 
-        # Step 5: Create an LLMChain
-        chain = LLMChain(llm=llm, prompt=prompt)
+        # # Step 5: Create an LLMChain
+        # chain = LLMChain(llm=llm, prompt=prompt)
 
-        # Step 6: Process the image (use OCR or image captioning to get the description)
-        # This part is a placeholder; use OCR/image captioning library as needed
-        image_description = "Extracted description of the architectural diagram"
+        # # Step 6: Process the image (use OCR or image captioning to get the description)
+        # # This part is a placeholder; use OCR/image captioning library as needed
+        # image_description = "Extracted description of the architectural diagram"
 
-        # Step 7: Run the chain with the image description
-        result = chain.run({"image_description": image_description})
+        # # Step 7: Run the chain with the image description
+        # result = chain.run({"image_description": image_description})
 
-        # Step 8: Output the result
-        print(result)
+        # # Step 8: Output the result
+        # print(result)
+        pass
 
     def encode_image(uploaded_file):
         return base64.b64encode(uploaded_file.read()).decode('utf-8')

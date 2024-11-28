@@ -10,7 +10,7 @@ from collections import defaultdict
 import pypandoc
 import os
 from langchain_openai import ChatOpenAI
-from langchain.llms import Ollama
+from langchain_community.llms import Ollama
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -69,9 +69,8 @@ def json_to_security_requirement_table (security_requirements_json):
 def get_model_provider(model_provider, config_data):
 
     if model_provider == "OpenAI API":
-        # st.session_state['openai_api_key'] = openai_api_key
         # Add model selection input field to the sidebar
-        selected_model = st.selectbox(
+        st.selectbox(
             "Select the model you would like to use:",
             config_data["sidebar"]["open_api"]["connection"]["model_selection"]["options"],
             key="selected_model",
@@ -79,7 +78,6 @@ def get_model_provider(model_provider, config_data):
         )
 
     elif model_provider == "Ollama":
-        print(f"**************** Ollama selected - {model_provider}")
         base_url=os.getenv('OLLAMA_BASE_URL')
         try:
             response = requests.get(f"{base_url}/api/tags")
@@ -92,13 +90,11 @@ def get_model_provider(model_provider, config_data):
             data = response.json()
             available_models = [model["name"] for model in data["models"]]
             print(f"available ollama model - {available_models}")
-            # Add model selection input field to the sidebar
-            selected_model = st.selectbox(
+            st.selectbox(
                 "Select the model you would like to use:",
                 available_models,
                 key="selected_model",
             )
-
 
 def get_input(key=""):
     # github_url = st.text_input(
@@ -130,7 +126,6 @@ def get_input(key=""):
     st.session_state['app_input'] = input_text
 
     return input_text
-
 
 def analyze_github_repo(repo_url):
     # Extract owner and repo name from URL
