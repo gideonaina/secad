@@ -9,6 +9,8 @@ from github import Github
 from collections import defaultdict
 import pypandoc
 import os
+from langchain_openai import ChatOpenAI
+from langchain.llms import Ollama
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -66,28 +68,30 @@ def json_to_security_requirement_table (security_requirements_json):
 
 def get_model_provider(model_provider, config_data):
 
-  if model_provider == "OpenAI API":
-      # st.session_state['openai_api_key'] = openai_api_key
-      # Add model selection input field to the sidebar
-    selected_model = st.selectbox(
-          "Select the model you would like to use:",
-          config_data["sidebar"]["open_api"]["connection"]["model_selection"]["options"],
-          key="selected_model",
-          # help="GPT-4o and GPT-4o mini are OpenAI's latest models and are recommended."
-      )
+    if model_provider == "OpenAI API":
+        # st.session_state['openai_api_key'] = openai_api_key
+        # Add model selection input field to the sidebar
+        selected_model = st.selectbox(
+            "Select the model you would like to use:",
+            config_data["sidebar"]["open_api"]["connection"]["model_selection"]["options"],
+            key="selected_model",
+            # help="GPT-4o and GPT-4o mini are OpenAI's latest models and are recommended."
+        )
 
-    if model_provider == "Ollama":
-        # Make a request to the Ollama API to get the list of available models
+    elif model_provider == "Ollama":
+        print(f"**************** Ollama selected - {model_provider}")
+        base_url=os.getenv('OLLAMA_BASE_URL')
         try:
-            response = requests.get("http://localhost:11434/api/tags")
+            response = requests.get(f"{base_url}/api/tags")
             response.raise_for_status() # Raise an exception for 4xx/5xx status codes
         except requests.exceptions.RequestException as e:
-            st.error("Ollama endpoint not found, please select a different model provider.")
+            st.error(f"Ollama endpoint not found, please select a different model provider. {e}")
             response = None
         
         if response:
             data = response.json()
             available_models = [model["name"] for model in data["models"]]
+            print(f"available ollama model - {available_models}")
             # Add model selection input field to the sidebar
             selected_model = st.selectbox(
                 "Select the model you would like to use:",
@@ -203,7 +207,6 @@ def summarize_file(file_path, content):
 
     return summary
 
-
 # Used only in gradio UI
 def convert_markdown(markdown_string, doc_type='docx'):
     if not markdown_string:
@@ -222,3 +225,37 @@ def convert_markdown(markdown_string, doc_type='docx'):
     pypandoc.convert_file(detail_output_file, doc_type, outputfile=detail_file)
     print(f"output path {outputfile}")
     return outputfile
+
+
+def get_llm_model(model_info: dict):
+    # api_key=os.getenv('OPENAI_API_KEY')
+    # print(f"******** Model info - {model_info}. API Key - {api_key}")
+    model_provider = model_info['model_provider']
+
+    if model_provider == "OpenAI API":
+        temp_slider = model_info['model_temp']
+        api_key=os.getenv('OPENAI_API_KEY')
+        model_name = model_info['selected_model']
+            
+        return ChatOpenAI(
+            model=model_name,
+            api_key=api_key,
+            temperature=temp_slider
+        )
+
+    if model_provider == "Ollama":
+        base_url=os.getenv('OLLAMA_BASE_URL')
+        # Make a request to the Ollama API to get the list of available models
+        try:
+            response = requests.get(f"{base_url}/api/tags")
+            response.raise_for_status()
+        except requests.exceptions.RequestException as e:
+            response = None
+            raise (f"Ollama endpoint not found, please select a different model provider. Error - {e}")
+        
+        if response:
+            return Ollama(
+                model=model_info['selected_model'],
+                temperature=model_info['model_temp'],
+                base_url=base_url
+            )

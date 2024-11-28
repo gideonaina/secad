@@ -12,12 +12,20 @@ setup:
 vm:
 	(cd . && . ./.venv/bin/activate)
 
-
 rag-ingest-file:
-	python knowledge_extraction/rag_management/data_prep.py -c $(COLLECTION) -f $(FILE)
+	uv run python rag_management/data_prep.py -c $(COLLECTION) -f $(FILE)
 
 ui-gr:
-	gradio main.py
+	uv run gradio main.py
 
 ui-st:
-	streamlit run ui/streamlit_ui/launch.py
+	uv run streamlit run ui/streamlit_ui/launch.py
+
+# rag-ingest-file:
+# 	python knowledge_extraction/rag_management/data_prep.py -c $(COLLECTION) -f $(FILE)
+
+# ui-gr:
+# 	gradio main.py
+
+# ui-st:
+# 	streamlit run ui/streamlit_ui/launch.py

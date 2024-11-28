@@ -1,9 +1,7 @@
 import os
 import json
 import streamlit as st
-from langchain_openai import ChatOpenAI
-from ui.utils import get_input
-from knowledge_retrieval.utils import get_llm_model
+from ui.utils import get_input, get_llm_model
 from knowledge_retrieval.image_review_crew.image_review import ImageReview
 from knowledge_retrieval.product_security_crew.threat_model_crew import ThreatModelCrew
 
@@ -22,7 +20,7 @@ def get_tab(data, selected_model, model_provider):
         st.session_state['app_input'] = ''
     
 
-    # If model provider is OpenAI API and the model is gpt-4-turbo or gpt-4o
+    # Only do file analysis for OpenAI models.
     if model_provider and selected_model in data["sidebar"]["open_api"]["connection"]["model_selection"]["options"]:
         uploaded_file = st.file_uploader("Upload architecture diagram", type=data["sidebar"]["open_api"]["modal"]["upload_file_types"])
         

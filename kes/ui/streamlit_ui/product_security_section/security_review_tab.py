@@ -2,7 +2,7 @@ import base64
 import streamlit as st
 import json
 import streamlit.components.v1 as components
-from knowledge_retrieval.utils import get_llm_model
+from ui.utils import get_llm_model
 from knowledge_retrieval.product_security_crew.security_requirement_crew import SecurityRequirementCrew
 
 def get_tab(data, selected_model, model_provider):

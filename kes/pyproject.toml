@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+# Package to include in the build
+[tool.setuptools]
+packages = {find = {include = ["ui", "rag_management", "knowledge_retrieval"]}}
+
+
+[project]
+name = "kes"
+version = "0.1.0"
+description = "KES AI project"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "argparse>=1.4.0",
+    "boto3>=1.35.71",
+    "crewai-tools==0.8.3",
+    "crewai==0.51.0",
+    "langchain>=0.2.17",
+    "langchain-community>=0.2.19",
+    "langchain-openai==0.1.17",
+    "langchain-postgres>=0.0.12",
+    "openai==1.37.0",
+    "pgvector>=0.2.5",
+    "psycopg==3.2.1",
+    "pypdf==4.3.1",
+    "python-dotenv==1.0.1",
+    "unstructured==0.10.25",
+    "pyowm==3.3.0",
+    "tools==0.1.9",
+    "pypandoc>=1.14",
+    "gradio>=5.7.0",
+    "streamlit>=1.40.2",
+    "pygithub>=2.5.0",
+]
+
+[tools.uv]
+source = ["kes"]
