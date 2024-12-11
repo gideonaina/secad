@@ -4,7 +4,6 @@
 COMPOSE_FILE := llm.docker-compose.yml
 RAG_COMPOSE_FILE := rag.docker-compose.yml
 DOCKER_COMPOSE := docker compose
-
 LOCAL_LLM ?= llama3
 
 

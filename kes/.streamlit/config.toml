@@ -1,0 +1,12 @@
+[theme]
+primaryColor="##0dc5b9"
+backgroundColor="#fff"
+secondaryBackgroundColor="#eeeee4"
+textColor="#000"
+font="sans serif"
+
+[server]
+runOnSave = true
+allowRunOnSave = true
+fastReruns = true
+fileWatcherType = "auto"
