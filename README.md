@@ -1,10 +1,10 @@
 # SECAD
 
 ## Summary
-SECAD is an **agentic, AI-powered** security advisor that can be used to augment security workflows. 
-For more details read: 
+SECAD is an **agentic, AI-powered** security workflow augmentation application.
+
+For more details read this article on the use case of the project: 
 https://medium.com/@gideonaina/workflow-augmentation-with-multi-agent-ai-system-3c3223c948dc
- 
 
 
 ## System Architecture.
