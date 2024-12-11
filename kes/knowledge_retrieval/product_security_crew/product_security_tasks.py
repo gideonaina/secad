@@ -204,7 +204,7 @@ class ProductSecurityTask:
             following information for each threat scenario:
             - Threat Type: Generate the threat type.
             - Threat Scenario: detailed infromation about the threat scenario.
-            - Control: Generate one or more countermeasure that can be implemented to mitigate the threat.
+            - Control: Generate one or more countermeasure that can be implemented to mitigate the threat. Annotate the control with a reference of Policy, Standard or framework that the requirement suggestion is coming from. For example PCI Requirement 5 or NIST 800-53.
             - Potential Imapct: Provide information about potential impact of the threat scenario on the system.
             </description>
             
@@ -245,13 +245,13 @@ class ProductSecurityTask:
     def requirement_generation_task(self, system_description, agent):
         return Task(description=dedent(f"""
             <task>
-                Generate a list of well defined security requirement that needs to be met by the
+                Given the context below: generate a list of well defined security requirement that needs to be met by the
                 application to mitigate each threat scenario.
             </task>
                                        
-            <systemInformation>
+            <context>
                 {system_description}
-            </systemInformation>
+            </context>
                    
             <description>
             The output should contain the following information:
@@ -268,6 +268,7 @@ class ProductSecurityTask:
             * The system reference must be generic and not a specific vendor technology.
             * The requirements must be written in the following manner: The 
             Entity -> The Requirement Mandate Level -> The Requirement.
+            * Annotate the requirement with a reference of Policy, Standard or framework that the requirement suggestion is coming from. For example OWASP top 10, PCI DSS Section 5.
             * An examples of well written requirement are:
             - The system MUST encrypt all data in transit to prevent sniffing and spoofing attacks.
             - The platform MUST block all executable files uploaded to it.
@@ -288,13 +289,13 @@ class ProductSecurityTask:
                 "requirement": "The system MUST encrypt all data in transit to prevent sniffing and spoofing attacks",
                 "details": "Encrypting data in transit ensures that the data remains protected from exposure during transmission.",
                 "threat_scenario": "An attacker intercepts the communication between the client (e.g., an application or user) and the server by positioning themselves as a proxy (man-in-the-middle)",
-                "risk_score": 6,
+                "risk_score": 6
                 }},
                 {{
                 "requirement": "The platform MUST block all executable files uploaded to it.",
                 "details": "Blocking executable file on the platform prevents remote code execution attack.",
                 "threat_scenario": "An attacker uploads a malicious executable file disguised as a legitimate document or compressed archive to the platform. Due to insufficient validation, the platform accepts the file, allowing it to be stored or processed. Later, the malicious executable is either executed on the platform's servers or downloaded by unsuspecting users, potentially leading to system compromise or malware propagation.",
-                "risk_score": 8,
+                "risk_score": 8
                 }}
             ]
             }}
@@ -315,13 +316,110 @@ class ProductSecurityTask:
                 "requirement": "The system MUST encrypt all data in transit to prevent sniffing and spoofing attacks",
                 "details": "Encrypting data in transit ensures that the data remains protected from exposure during transmission.",
                 "threat_scenario": "An attacker intercepts the communication between the client (e.g., an application or user) and the server by positioning themselves as a proxy (man-in-the-middle)",
-                "risk_score": 6,
+                "risk_score": 6
                 },
                 {
                 "requirement": "The platform MUST block all executable files uploaded to it.",
                 "details": "Blocking executable file on the platform prevents remote code execution attack.",
                 "threat_scenario": "An attacker uploads a malicious executable file disguised as a legitimate document or compressed archive to the platform. Due to insufficient validation, the platform accepts the file, allowing it to be stored or processed. Later, the malicious executable is either executed on the platform's servers or downloaded by unsuspecting users, potentially leading to system compromise or malware propagation.",
-                "risk_score": 8,
+                "risk_score": 8
+                }
+            ]
+            }
+            """
+            ))
+    
+    def requirement_refinement_task(self, written_requirement, generated_context, agent):
+        return Task(description=dedent(f"""
+            # Task Instruction
+            Given the contextual information below, enrich these security requirements {written_requirement}. 
+
+            ## Context
+            {generated_context}
+                   
+            # Task Output
+            The rewrriten output should contain the following information:
+            **Requirement**: Rewrite the requirement to follow the following rules:
+            * Requirements must have a coherent and extract 
+            structure that includes at least:   
+            * The entity in question must be clearly defined and prescribed. 
+            Examples include but are not limited to 'the system', 'the user',
+            'the administrator', 'the database', etc.
+            * The mandate level of requirement based on RFC 2119. Examples 'MUST',
+            'SHOULD', 'MAY' etc.
+            * The action / expectation from the entity.
+            * The system reference must be generic and not a specific vendor technology.
+            * The requirements must be written in the following manner: The 
+            Entity -> The Requirement Mandate Level -> The Requirement.
+            * An examples of well written requirement are:
+            - The system MUST encrypt all data in transit to prevent sniffing and spoofing attacks.
+            - The platform MUST block all executable files uploaded to it.
+
+            **Source**: Find a source for the requirement. The source is a reference to Policy, Standard or 
+            Framework that the requirement suggestion came from. For example OWASP top 10, 
+            PCI DSS Requirement 5, NIST 800-53.
+
+            **Details**: This should contain extra information that will provide context and 
+            understanding for the requirement. For example, if a requirement requires all
+            system to encrypt data in transit using TLS. The details will be: 
+            'Encrypting data in transit ensures that the data remains protected from exposure during transmission'
+            **Threat Scenario**: This the threat scenario that the requirement is looking to mitigate.
+            **Threat Story**: "This is narrative scenario that describes a potential cyber attack, outlining 
+            the attacker's methods, the vulnerabilities they might exploit, and the potential consequences 
+            for a victim organization."
+            **Risk Score**: The is a Common Vulnerability Scoring System (CVSS) risk score for the threat
+            based on your knowledge of the system.
+
+            
+            Output this information as JSON. Ensure the JSON response is correctly formatted and does not 
+            contain any additional text. Here is an example of the expected JSON response format:
+            {{
+            "requirements": [
+                {{
+                "requirement": "The system MUST encrypt all data in transit to prevent sniffing and spoofing attacks",
+                "source": "PCI DSS 4.0 Requirement 4",
+                "details": "Encrypting data in transit ensures that the data remains protected from exposure during transmission.",
+                "threat_scenario": "An attacker intercepts the communication between the client (e.g., an application or user) and the server by positioning themselves as a proxy (man-in-the-middle)",
+                "threat_story": "As an attacker, I would like to leverage man-in-the-middle attacked to steal data transmitted between two parties or systems",
+                "risk_score": 6
+                }},
+                {{
+                "requirement": "The platform MUST block all executable files uploaded to it.",
+                "source": "NIST 800-53",
+                "details": "Blocking executable file on the platform prevents remote code execution attack.",
+                "threat_scenario": "An attacker uploads a malicious executable file disguised as a legitimate document or compressed archive to the platform. Due to insufficient validation, the platform accepts the file, allowing it to be stored or processed. Later, the malicious executable is either executed on the platform's servers or downloaded by unsuspecting users, potentially leading to system compromise or malware propagation.",
+                "threat_story": "As malicious outsider, I would like to to trick my victim into executing code containing malicious code.",
+                "risk_score": 8
+                }}
+            ]
+            }}
+            
+            <notes>
+            {self.__tip_section()}
+            </notes>
+        """),
+            agent=agent,
+            expected_output= dedent(
+            """
+            Output this information as JSON. Ensure the JSON response is correctly formatted and does not 
+            contain any additional text. Here is an example of the expected JSON response format:
+            {
+            "requirements": [
+                {
+                "requirement": "The system MUST encrypt all data in transit to prevent sniffing and spoofing attacks",
+                "source": "PCI DSS 4.0 Requirement 4",
+                "details": "Encrypting data in transit ensures that the data remains protected from exposure during transmission.",
+                "threat_scenario": "An attacker intercepts the communication between the client (e.g., an application or user) and the server by positioning themselves as a proxy (man-in-the-middle)",
+                "threat_story": "As an attacker, I would like to leverage man-in-the-middle attacked to steal data transmitted between two parties or systems",
+                "risk_score": 6
+                },
+                {
+                "requirement": "The platform MUST block all executable files uploaded to it.",
+                "source": "NIST 800-53",
+                "details": "Blocking executable file on the platform prevents remote code execution attack.",
+                "threat_scenario": "An attacker uploads a malicious executable file disguised as a legitimate document or compressed archive to the platform. Due to insufficient validation, the platform accepts the file, allowing it to be stored or processed. Later, the malicious executable is either executed on the platform's servers or downloaded by unsuspecting users, potentially leading to system compromise or malware propagation.",
+                "threat_story": "As malicious outsider, I would like to to trick my victim into executing code containing malicious code.",                
+                "risk_score": 8
                 }
             ]
             }
