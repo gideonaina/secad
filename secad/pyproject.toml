@@ -7,9 +7,9 @@ build-backend = "setuptools.build_meta"
 packages = {find = {include = ["ui", "rag_management", "knowledge_retrieval"]}}
 
 [project]
-name = "kes"
+name = "secad"
 version = "0.1.0"
-description = "KES AI project"
+description = "SECAD is an agentic, AI-powered security workflow augmentation application."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -36,7 +36,7 @@ dependencies = [
 ]
 
 [tools.uv]
-source = ["kes"]
+source = ["secad"]
 
 [dependency-groups]
 dev = [

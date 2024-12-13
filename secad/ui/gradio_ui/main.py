@@ -62,7 +62,7 @@ css = """
 
 # Create the Gradio interface
 with gr.Blocks(theme=gr.themes.Soft(), css=css) as demo:
-    gr.Markdown("## KES")
+    gr.Markdown("## SECAD")
     temp_slider = gr.Slider(
             0, 1,
             value=0.05,

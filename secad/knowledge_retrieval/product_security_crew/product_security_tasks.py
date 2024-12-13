@@ -142,7 +142,7 @@ class ProductSecurityTask:
                 are typically non-critical business rules being processed.
                 * Mark 6 and 7 for critical business business rule processing entities.
                 They are components that are parsing or processing critical or sensitive
-                business rukes in the system.
+                business rules in the system.
                 * Mark 8 or 9 for components where data hits the disk. These are components
                 that store information related to the system like databases, object store.
             """
