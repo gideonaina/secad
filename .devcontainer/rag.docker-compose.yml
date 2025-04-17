@@ -1,0 +1,55 @@
+services:
+  secad:
+    build:
+      context: .
+      dockerfile: app.Dockerfile
+    volumes:
+      - ..:/workspace/secad:cached
+    command: sleep infinity
+    depends_on:
+      - vector-db
+  #   image: langflowai/langflow:latest
+  #   ports:
+  #     - "7860:7860"
+  #   depends_on:
+  #     - postgres
+  #   environment:
+  #     - LANGFLOW_DATABASE_URL=postgresql://langflow:langflow@postgres:5432/langflow
+  #     - DATABASE_URL=postgresql://langflow:langflow@postgres:5432/langflow
+  #     # This variable defines where the logs, file storage, monitor data and secret keys are stored.
+  #   volumes:
+  #     - langflow-data:/app/langflow
+  #   networks:
+  #     - app-network
+
+  
+  vector-db:
+    # image: ankane/pgvector:latest
+    build:
+      context: .
+      dockerfile: db.Dockerfile
+    environment:
+      POSTGRES_USER: langflow
+      POSTGRES_PASSWORD: langflow
+      POSTGRES_DB: langflow
+      LANG: en_US.utf8
+      LANGUAGE: en_US:en
+      LC_ALL: en_US.utf8
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./initdb:/docker-entrypoint-initdb.d
+    # healthcheck:
+    #   test: ["CMD-SHELL", "pg_isready -U langflow"]
+    #   # test: ["CMD-SHELL", "psql -U langflow -d langflow -c 'SELECT extname FROM pg_extension WHERE extname = \'vector\';'"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 5
+      # start_period: 30s
+    networks:
+      - ragnet
+
+networks:
+  ragnet:
+    driver: bridge
+
