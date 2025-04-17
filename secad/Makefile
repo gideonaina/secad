@@ -9,3 +9,6 @@ start-gradio:
 
 start:
 	uv run streamlit run ui/streamlit_ui/launch.py
+
+debug:
+	uv run python -m debugpy --listen 0.0.0.0:5678 --wait-for-client -m streamlit run ui/launch.py --server.port 8501 --server.address 0.0.0.0

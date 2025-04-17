@@ -4,6 +4,6 @@ RUN apt-get update && apt-get install curl git \
 && curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin \
 && chmod +x /usr/local/bin/just
 
-WORKDIR /workspace
+# WORKDIR /workspace
 
-EXPOSE 8501
+# EXPOSE 8501
