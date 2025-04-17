@@ -10,5 +10,5 @@ tmp/
 iac/
 
 #Ignore vscode files except the debug config
-.vscode/*
-!.vscode/launch.json
+secad/.vscode/*
+!secad/.vscode/launch.json
