@@ -16,6 +16,7 @@
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": "pip install uv && uv sync && uv pip install -e .",
+	"updateContentCommand": "pip install -e .",
 	// "postCreateCommand": "cd secad && pip install . && pip install -e .",
 	// "postStartCommand": "streamlit run secad/ui/streamlit_ui/launch.py --server.port 8501 --server.address 0.0.0.0",
 	// "postStartCommand": "python -m debugpy --listen 0.0.0.0:5678 --wait-for-client -m streamlit run ui/launch.py --server.port 8501 --server.address 0.0.0.0",

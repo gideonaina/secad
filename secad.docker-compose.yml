@@ -2,14 +2,12 @@ services:
   secad:
     build:
       context: .
-      dockerfile: devcontainer.Dockerfile
+      dockerfile: secad.Dockerfile
     volumes:
       - ../:/workspaces/secad:cached
     command: sleep infinity
     depends_on:
       - vector-db
-    networks:
-      - ragnet
   
   vector-db:
     build:

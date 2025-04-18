@@ -22,7 +22,7 @@ st.set_page_config(
 )
 
 logo_path = os.path.join(root_dir, "assets/logo.png")
-st.sidebar.image(image=logo_path)
+# st.sidebar.image(image=logo_path)
 
 config_path = os.path.join(root_dir, "config/side_bar_definition.yml")
 
@@ -42,6 +42,20 @@ with st.sidebar:
 
     get_model_provider(model_provider, data)
     model_temp = st.slider(label="Model Temperature", min_value=0.0, max_value=1.0, value=0.05, step=0.05, key="model_temp")
+
+    st.markdown("---")
+    st.markdown("## RAG Configuration")
+    is_rag_used = st.toggle("Use RAG", value=False, key="use_rag", help="Use to specify if a RAG should be used for the current workflow")
+    if is_rag_used:
+        st.selectbox(
+        "Select the collection to use",
+        ["requirements", "controls", "threats", "tests"],
+        key="rag_selection",
+        help="Select the collection to use",
+    )
+        uploaded_doc = st.file_uploader("Upload Document to add to RAG", type=".pdf, .docx, .doc .txt, .md")
+        
+
 
 tab1, tab2, tab3 = st.tabs(["Threat Model", "Security Requirements", "Requirement Refinement"])
 selected_model = st.session_state.get('selected_model', '')
