@@ -3,6 +3,7 @@ import os
 
 import streamlit as st
 
+
 from knowledge_retrieval.image_review_crew.image_review import ImageReview
 from knowledge_retrieval.product_security_crew.threat_model_crew import ThreatModelCrew
 from ui.utils import get_input, get_llm_model
@@ -118,3 +119,5 @@ def json_to_threat_model_markdown(threat_model):
         markdown_output += f"| R.{idx+1} | {threat['threat_type']} | {threat['threat_scenario']} | {threat['impact']} |{threat['control']} |\n"
     
     return markdown_output
+
+

@@ -3,9 +3,11 @@ services:
     build:
       context: .
       dockerfile: secad.Dockerfile
-    volumes:
-      - ../:/workspaces/secad:cached
-    command: sleep infinity
+    restart: unless-stopped
+    ports:
+      - "8501:8501"
+    env_file:
+      - ./secad/.env
     depends_on:
       - vector-db
   

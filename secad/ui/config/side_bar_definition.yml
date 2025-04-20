@@ -85,5 +85,11 @@ sidebar:
           - "x"
         default: "x"
 
-
+  rag:
+    collections:
+      - "requirements"
+      - "controls"
+      - "threats"
+      - "tests"
+      - "Ollama"
   

@@ -7,8 +7,11 @@ rag-ingest:
 start-gradio:
 	uv run gradio main.py
 
-start:
+dev:
 	uv run streamlit run ui/streamlit_ui/launch.py --server.port 8501 --server.address 0.0.0.0
 
 debug:
 	uv run python -m debugpy --listen 0.0.0.0:5678 --wait-for-client -m streamlit run ui/streamlit_ui/launch.py --server.port 8501 --server.address 0.0.0.0
+
+start:
+	streamlit run ui/streamlit_ui/launch.py --server.port 8501 --server.address 0.0.0.0

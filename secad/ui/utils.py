@@ -234,7 +234,7 @@ def get_llm_model(model_info: dict):
             
         return ChatOpenAI(
             model=model_name,
-            api_key=api_key,
+            # api_key=api_key,
             temperature=temp_slider
         )
 

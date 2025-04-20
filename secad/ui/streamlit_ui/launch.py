@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from product_security_section import security_review_tab, threat_model_tab, requirement_refinement_tab
 
 from ui.utils import get_model_provider
+from rag_management.data_prep import save_as_embedding
 
 load_dotenv()
 root_dir = Path(__file__).parent.parent
@@ -45,16 +46,19 @@ with st.sidebar:
 
     st.markdown("---")
     st.markdown("## RAG Configuration")
-    is_rag_used = st.toggle("Use RAG", value=False, key="use_rag", help="Use to specify if a RAG should be used for the current workflow")
+    is_rag_used_value = False
+    is_rag_used = st.toggle("Update RAG", value=is_rag_used_value, key="use_rag", help="Use to specify if a RAG should be used for the current workflow")
     if is_rag_used:
         st.selectbox(
-        "Select the collection to use",
-        ["requirements", "controls", "threats", "tests"],
-        key="rag_selection",
-        help="Select the collection to use",
+            "Select the collection to use", ["requirements", "controls", "threats", "tests"],
+            key="rag_selection", help="Select the collection to use",
     )
-        uploaded_doc = st.file_uploader("Upload Document to add to RAG", type=".pdf, .docx, .doc .txt, .md")
+        uploaded_doc = st.file_uploader("Upload Document to add to RAG", key="rag_uploader", type=["pdf", "docx", "doc", "txt", "md"])
         
+        if uploaded_doc is not None:
+            with st.spinner("Saving to RAG ..."):
+                result = save_as_embedding(uploaded_doc, st.session_state.rag_selection)
+                st.info(result["message"])
 
 
 tab1, tab2, tab3 = st.tabs(["Threat Model", "Security Requirements", "Requirement Refinement"])
