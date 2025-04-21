@@ -130,3 +130,57 @@ class ImageReview:
         return output
     
 
+    def system_information_as_mermaid_agent(self, vision_llm):
+        return Agent(
+            role='Software Architect',
+            backstory=dedent(""" You are an expert in software architecture
+                        with expertise in understanding the details of a software 
+                        by looking at the system software architectural diagram.
+                        """),
+            goal=dedent("""Properly Analyze the software architectural diagram,
+                        and redraw it in mermaid format. The mermaid diagram should be
+                        a proper representation of the system architecture.
+                        """),
+            verbose=True,
+            allow_delegation=False,
+            tools=[VisionTool()],
+            llm = vision_llm
+    )
+
+    def architecture_image_analysis_as_mermaid_task(self, image_path, agent) -> Task:
+
+        return Task(description=dedent(f"""
+            <task>
+                Draw a mermaid diagram representation of the architecture.
+            </task>
+                                           
+            Redraw the architectural diagram in this image {image_path} in mermaid format.
+            The mermaid diagram should be a proper representation of the system architecture.
+            Make sure to include all the components and connections in the diagram.
+
+        """),
+            agent=agent,
+            expected_output= dedent(
+            """
+            Your final answer must and ONLY a valid mermaid code without any other text.
+            Don't include any other text or explanation. DO NOT include
+            "```mermaid" or "```" or any other text. Just include the mermaid code starting "graph TD"
+            An example of a valid format is below (without the "):
+            "
+                graph TD
+                A[Component A] -->|Protocol| B[Component B]
+                A --> C[Component C]
+                B --> D[Component D]
+            "
+            Make sure to use the correct syntax for mermaid diagrams.
+            """
+            )
+        )
+    
+    def run_mermaid(self, vision_llm, image_path):
+        mermaid_diagram_agent = self.system_information_as_mermaid_agent(vision_llm)
+        mermaid_diagram_task = self.architecture_image_analysis_as_mermaid_task(image_path, mermaid_diagram_agent)
+        output = mermaid_diagram_task.execute_sync()
+        return output
+    
+

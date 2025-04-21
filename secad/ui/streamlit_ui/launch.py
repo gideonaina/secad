@@ -6,7 +6,7 @@ from pathlib import Path
 import streamlit as st
 import yaml
 from dotenv import load_dotenv
-from product_security_section import security_review_tab, threat_model_tab, requirement_refinement_tab
+from product_security_section import security_review_tab, threat_model_tab, threat_analysis_tab
 
 from ui.utils import get_model_provider
 from rag_management.data_prep import save_as_embedding
@@ -61,14 +61,18 @@ with st.sidebar:
                 st.info(result["message"])
 
 
-tab1, tab2, tab3 = st.tabs(["Threat Model", "Security Requirements", "Requirement Refinement"])
+tab1, tab2, tab3 = st.tabs(["Threat Analysis", "Threat Model", "Security Requirements"])
+# tab1, tab2, tab3 = st.tabs(["Threat Model", "Security Requirements", "Requirement Refinement"])
 selected_model = st.session_state.get('selected_model', '')
 
 with tab1:
-    threat_model_tab.get_tab(data=data, model_provider=model_provider, selected_model=selected_model)
+    threat_analysis_tab.get_tab(data=data, model_provider=model_provider, selected_model=selected_model)
 
 with tab2:
-    security_review_tab.get_tab(data=data, model_provider=model_provider, selected_model=selected_model)
+    threat_model_tab.get_tab(data=data, model_provider=model_provider, selected_model=selected_model)
 
 with tab3:
-    requirement_refinement_tab.get_tab(data=data, model_provider=model_provider, selected_model=selected_model)
+    security_review_tab.get_tab(data=data, model_provider=model_provider, selected_model=selected_model)
+
+# with tab3:
+#     requirement_refinement_tab.get_tab(data=data, model_provider=model_provider, selected_model=selected_model)

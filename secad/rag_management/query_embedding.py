@@ -9,12 +9,6 @@ from langchain_postgres.vectorstores import PGVector
 load_dotenv()
 
 
-# class QueryEmbedding:
-#         def __init__(self) -> None:
-#                 pass
-# map = {
-#     "Security Review": "security_requirement"
-# }
 POSTGRES_USERNAME=os.getenv("POSTGRES_USERNAME")
 POSTGRES_PASSWORD=os.getenv("POSTGRES_PASSWORD")
 POSTGRES_HOST=os.getenv("POSTGRES_HOST")
@@ -30,8 +24,7 @@ connection_string = os.getenv("CONNECTION_STRING")
 
 def similarity_search(prompt: str, collection_name = collection_name) -> str:
             
-    embeddings = OpenAIEmbeddings()  # Provide your OpenAI API key
-    # connection_string = os.getenv("CONNECTION_STRING")
+    embeddings = OpenAIEmbeddings()
     print(f"PGVector parameters: connection: {connection_string}, collection_name: {collection_name}")
     vector_store = PGVector(connection=connection_string, embeddings=embeddings, collection_name=collection_name)
     

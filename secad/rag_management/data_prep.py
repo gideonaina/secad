@@ -29,11 +29,11 @@ def load_and_split_file(file_path):
         # print(f'************ file extension - {file_extension}')
         loader = PyPDFLoader(file_path)
         documents = loader.load_and_split()
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=20)
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=2600, chunk_overlap=100)
         split_docs = text_splitter.split_documents(documents)
     else:
         documents = loader.load()
-        splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=20)
+        splitter = RecursiveCharacterTextSplitter(chunk_size=2600, chunk_overlap=100)
         split_docs = splitter.split_text(documents)
     
     return split_docs

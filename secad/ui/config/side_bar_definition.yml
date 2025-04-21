@@ -29,6 +29,7 @@ sidebar:
         - "jpg"
         - "jpeg"
         - "png"
+        - "mmd"
   
   azure_openai_api:
     instructions: |

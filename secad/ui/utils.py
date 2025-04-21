@@ -254,3 +254,12 @@ def get_llm_model(model_info: dict):
                 temperature=model_info['model_temp'],
                 base_url=base_url
             )
+        
+def check_file_type(file_path: str, file_type: str):
+    # _, file_extension = os.path.splitext(file_path)
+    file_path_parts = file_path.lower().split('.')
+
+    if file_path_parts[-1] == file_type:
+        return True
+    
+    return False
