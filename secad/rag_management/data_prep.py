@@ -43,16 +43,16 @@ def save_as_embedding(uploaded_file, collection_name):
     
     if uploaded_file is not None:
 
-        POSTGRES_USERNAME=os.getenv("POSTGRES_USERNAME")
+        POSTGRES_USER=os.getenv("POSTGRES_USER")
         POSTGRES_PASSWORD=os.getenv("POSTGRES_PASSWORD")
-        POSTGRES_HOST=os.getenv("POSTGRES_HOST")
-        POSTGRES_DATABASE=os.getenv("POSTGRES_DATABASE")
+        POSTGRES_HOST=os.getenv("POSTGRES_HOST", "localhost")
+        POSTGRES_DB=os.getenv("POSTGRES_DB")
         POSTGRES_PORT=os.getenv("POSTGRES_PORT")
         POSTGRES_CONNECTION_PREFIX=os.getenv("POSTGRES_CONNECTION_PREFIX")
 
         db_config = {
-            'dbname': POSTGRES_DATABASE,
-            'user': POSTGRES_USERNAME,
+            'dbname': POSTGRES_DB,
+            'user': POSTGRES_USER,
             'password': POSTGRES_PASSWORD,
             'host': POSTGRES_HOST,
             'port': POSTGRES_PORT
@@ -76,7 +76,7 @@ def save_as_embedding(uploaded_file, collection_name):
 
         splits = load_and_split_file(save_path)
 
-        CONNECTION_STRING = f"{POSTGRES_CONNECTION_PREFIX}://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DATABASE}"
+        CONNECTION_STRING = f"{POSTGRES_CONNECTION_PREFIX}://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
         os.environ["CONNECTION_STRING"] = CONNECTION_STRING
 
         file_details = {
@@ -96,11 +96,10 @@ def save_as_embedding(uploaded_file, collection_name):
 
     
 def main():
-    COLLECTION_NAME = os.getenv("COLLECTION_NAME")
     parser = argparse.ArgumentParser(description="Embedding Creation")
     parser.add_argument("-s", "--s3-file", action="store_true", help="Create embeddings and store them in the database.")
     parser.add_argument("-f", "--file-path", required=True, type=str, help="Path to local or S3 file (without prefix).")
-    parser.add_argument("-c", "--collection-name", default=COLLECTION_NAME, type=str, help="collection of the data being imported in RAG")
+    parser.add_argument("-c", "--collection-name", type=str, help="collection of the data being imported in RAG")
 
 
     args = parser.parse_args()
@@ -114,14 +113,14 @@ def main():
 
     splits = load_and_split_file(file_path)
 
-    POSTGRES_USERNAME=os.getenv("POSTGRES_USERNAME")
+    POSTGRES_USER=os.getenv("POSTGRES_USER")
     POSTGRES_PASSWORD=os.getenv("POSTGRES_PASSWORD")
-    POSTGRES_HOST=os.getenv("POSTGRES_HOST")
-    POSTGRES_DATABASE=os.getenv("POSTGRES_DATABASE")
+    POSTGRES_HOST=os.getenv("POSTGRES_HOST", "localhost")
+    POSTGRES_DB=os.getenv("POSTGRES_DB")
     POSTGRES_PORT=os.getenv("POSTGRES_PORT")
     POSTGRES_CONNECTION_PREFIX=os.getenv("POSTGRES_CONNECTION_PREFIX")
 
-    CONNECTION_STRING = f"{POSTGRES_CONNECTION_PREFIX}://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DATABASE}"
+    CONNECTION_STRING = f"{POSTGRES_CONNECTION_PREFIX}://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
     os.environ["CONNECTION_STRING"] = CONNECTION_STRING
     COLLECTION_NAME = args.collection_name
 

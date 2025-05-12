@@ -15,13 +15,13 @@ load_dotenv()
 # map = {
 #     "Security Review": "security_requirement"
 # }
-POSTGRES_USERNAME=os.getenv("POSTGRES_USERNAME")
+POSTGRES_USER=os.getenv("POSTGRES_USER")
 POSTGRES_PASSWORD=os.getenv("POSTGRES_PASSWORD")
-POSTGRES_HOST=os.getenv("POSTGRES_HOST")
-POSTGRES_DATABASE=os.getenv("POSTGRES_DATABASE")
+POSTGRES_HOST=os.getenv("POSTGRES_HOST", "localhost")
+POSTGRES_DB=os.getenv("POSTGRES_DB")
 POSTGRES_PORT=os.getenv("POSTGRES_PORT")
 POSTGRES_CONNECTION_PREFIX=os.getenv("POSTGRES_CONNECTION_PREFIX")
-CONNECTION_STRING = f"{POSTGRES_CONNECTION_PREFIX}://{POSTGRES_USERNAME}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DATABASE}"
+CONNECTION_STRING = f"{POSTGRES_CONNECTION_PREFIX}://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
 os.environ["CONNECTION_STRING"] = CONNECTION_STRING
 
 collection_name = os.getenv("COLLECTION_NAME")
@@ -60,15 +60,15 @@ def similarity_search(prompt: str, collection_name = collection_name) -> str:
 
 def test(prompt: str) -> None:
     #  Define your database connection details
-    POSTGRES_USERNAME=os.getenv("POSTGRES_USERNAME")
+    POSTGRES_USER=os.getenv("POSTGRES_USER")
     POSTGRES_PASSWORD=os.getenv("POSTGRES_PASSWORD")
-    POSTGRES_HOST=os.getenv("POSTGRES_HOST")
-    POSTGRES_DATABASE=os.getenv("POSTGRES_DATABASE")
+    POSTGRES_HOST=os.getenv("POSTGRES_HOST", "localhost")
+    POSTGRES_DB=os.getenv("POSTGRES_DB")
     POSTGRES_PORT=os.getenv("POSTGRES_PORT")
 
     db_config = {
-        'dbname': POSTGRES_DATABASE,
-        'user': POSTGRES_USERNAME,
+        'dbname': POSTGRES_DB,
+        'user': POSTGRES_USER,
         'password': POSTGRES_PASSWORD,
         'host': POSTGRES_HOST,
         'port': POSTGRES_PORT
