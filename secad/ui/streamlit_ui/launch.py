@@ -14,6 +14,9 @@ from rag_management.data_prep import save_as_embedding
 load_dotenv()
 root_dir = Path(__file__).parent.parent
 icon_path = os.path.join(root_dir, "assets/secad-icon.png")
+os.makedirs(os.path.join(root_dir, "tmp"), exist_ok=True)
+TMP_FILE_PATH = os.path.join(root_dir, "tmp")
+st.session_state["TMP_FILE_PATH"] = TMP_FILE_PATH
 
 st.set_page_config(
     page_title="Security Advisor",
@@ -50,10 +53,10 @@ with st.sidebar:
     is_rag_used = st.toggle("Update RAG", value=is_rag_used_value, key="use_rag", help="Use to specify if a RAG should be used for the current workflow")
     if is_rag_used:
         st.selectbox(
-            "Select the collection to use", ["requirements", "controls", "threats", "tests"],
+            "Select the collection to use", data["sidebar"]["rag"]["collections"],
             key="rag_selection", help="Select the collection to use",
     )
-        uploaded_doc = st.file_uploader("Upload Document to add to RAG", key="rag_uploader", type=["pdf", "docx", "doc", "txt", "md"])
+        uploaded_doc = st.file_uploader("Upload Document to add to RAG", key="rag_uploader", type=["pdf"], help="Upload a document to add to the RAG")
         
         if uploaded_doc is not None:
             with st.spinner("Saving to RAG ..."):
@@ -61,18 +64,18 @@ with st.sidebar:
                 st.info(result["message"])
 
 
-tab1, tab2, tab3 = st.tabs(["Threat Analysis", "Threat Model", "Security Requirements"])
+tab1  = st.tabs(["Threat Model"])[0]
 # tab1, tab2, tab3 = st.tabs(["Threat Model", "Security Requirements", "Requirement Refinement"])
 selected_model = st.session_state.get('selected_model', '')
 
 with tab1:
     threat_analysis_tab.get_tab(data=data, model_provider=model_provider, selected_model=selected_model)
 
-with tab2:
-    threat_model_tab.get_tab(data=data, model_provider=model_provider, selected_model=selected_model)
+# with tab2:
+#     threat_model_tab.get_tab(data=data, model_provider=model_provider, selected_model=selected_model)
 
-with tab3:
-    security_review_tab.get_tab(data=data, model_provider=model_provider, selected_model=selected_model)
+# with tab3:
+#     security_review_tab.get_tab(data=data, model_provider=model_provider, selected_model=selected_model)
 
 # with tab3:
 #     requirement_refinement_tab.get_tab(data=data, model_provider=model_provider, selected_model=selected_model)

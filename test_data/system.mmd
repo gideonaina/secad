@@ -1,6 +1,15 @@
 graph TD
-Data_Sources[Data Sources] -->|Feed| Kafka_Cluster[Kafka Streaming Cluster]
-Kafka_Cluster -->|Data Ingest| Data_Ingest[Data Ingest Spark Streaming]
-Data_Ingest -->|Processed Data| Data_Lake[Data Lake Cassandra]
-Data_Ingest -->|Real-time Updates| Data_Push[Data Push]
-Data_Push -->|Web/Mobile App| Visualization[Visualization]
+Data_Sources[Data Sources]
+Kafka_Cluster[Kafka Streaming Cluster]
+Data_Ingestion[Data Ingestion - Spark Streaming]
+Data_Lake[Data Lake - Cassandra]
+Web_Application[Web Application]
+Data_Push_Mechanism[Data Push Mechanism]
+Batch_Processing[Batch Processing]
+
+Data_Sources --> Kafka_Cluster
+Kafka_Cluster --> Data_Ingestion
+Data_Ingestion --> Data_Lake
+Data_Ingestion --> Web_Application
+Data_Ingestion --> Data_Push_Mechanism
+Data_Ingestion --> Batch_Processing

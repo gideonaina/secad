@@ -22,7 +22,7 @@ collection_name = os.getenv("COLLECTION_NAME")
 connection_string = os.getenv("CONNECTION_STRING")
 
 
-def similarity_search(prompt: str, collection_name = collection_name) -> str:
+def similarity_search(prompt: str, collection_name: str) -> str:
             
     embeddings = OpenAIEmbeddings()
     print(f"PGVector parameters: connection: {connection_string}, collection_name: {collection_name}")

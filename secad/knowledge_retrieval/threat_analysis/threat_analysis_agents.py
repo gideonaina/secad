@@ -5,10 +5,9 @@ from crewai_tools import VisionTool
 
 vision_tool = VisionTool()
 
-class ProductSecurityAgent:
-    def __init__(self, main_model, vision_model) -> None:
-       self.llm = main_model
-       self.vision_llm = vision_model
+class ThreatAnalysisAgent:
+    def __init__(self, llm_model) -> None:
+       self.llm = llm_model
 
 
     def system_information_agent(self):
@@ -24,9 +23,9 @@ class ProductSecurityAgent:
                         will be used as input into a threat modeling task.
                         """),
             verbose=True,
-            allow_delegation=True,
+            allow_delegation=False,
             tools=[vision_tool],
-            llm = self.vision_llm
+            llm = self.llm
     )
     
     def architectural_analysis_agent(self):
@@ -47,7 +46,7 @@ class ProductSecurityAgent:
                         be useful for threat modeling
                 """),
             verbose=True,
-            allow_delegation=True,
+            allow_delegation=False,
             llm = self.llm
         )
     
@@ -65,7 +64,7 @@ class ProductSecurityAgent:
                         that would be useful for threat modeling.
                         """),
             verbose=True,
-            allow_delegation=True,
+            allow_delegation=False,
             llm = self.llm
         )
 
@@ -85,7 +84,7 @@ class ProductSecurityAgent:
                         when creating the threat scenarios.
                         """),
             verbose=True,
-            allow_delegation=True,
+            allow_delegation=False,
             llm = self.llm
         )
 
@@ -102,7 +101,7 @@ class ProductSecurityAgent:
                         generate well defined countermeansures for threat scenario.
                         """),
             verbose=True,
-            allow_delegation=True,
+            allow_delegation=False,
             llm = self.llm
     )
 

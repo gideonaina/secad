@@ -1,12 +1,15 @@
 from dotenv import load_dotenv
 
 from knowledge_retrieval import utils
-from knowledge_retrieval.product_security_crew.product_security_agents import (
-  ProductSecurityAgent,
+from knowledge_retrieval.models import ThreatAnalysisContext
+from knowledge_retrieval.threat_analysis.threat_analysis_agents import (
+  ThreatAnalysisAgent,
 )
-from knowledge_retrieval.product_security_crew.product_security_tasks import (
-  ProductSecurityTask,
+from knowledge_retrieval.threat_analysis.threat_analysis_tasks import (
+  ThreatAnalysisTasks,
 )
+
+from rag_management.query_embedding import similarity_search
 
 load_dotenv()
 
@@ -23,98 +26,39 @@ class ThreatAnalysisCrew:
       utils.remove_file(f"{export_file}.pdf")
       utils.remove_file(detail_output_file)
 
-  def run(self, system_information, image_path, main_model, vision_model):
-    agents = ProductSecurityAgent(main_model, vision_model)
-    tasks = ProductSecurityTask()
-
-    if(image_path):
-      arch_diagram_information = tasks.architecture_image_analysis_task(
-        image_path= image_path,
-        agent=agents.system_information_agent()
-      )
-      output = arch_diagram_information.execute_sync()
-
-    elif (system_information):
-      architectural_analysis_task = tasks.anaylsis_task(
-        system_description=system_information,
-        agent=agents.architectural_analysis_agent()
-      )
-      output = architectural_analysis_task.execute_sync()
-
-    else:
-      return "Input information required"
-
-    utils.append_to_file(detail_output_file, output.raw)
+  def execute(self, main_model, context_info: ThreatAnalysisContext):
+    agents = ThreatAnalysisAgent(main_model)
+    tasks = ThreatAnalysisTasks()
 
     trust_zone_identification_task = tasks.trust_boundary_identification_task(
-      system_description=output.raw,
+      context_info = context_info,
       agent=agents.trust_zone_identification_agent()
     )
 
     output = trust_zone_identification_task.execute_sync()
-    utils.append_to_file(detail_output_file, output.raw)
+    # utils.append_to_file(detail_output_file, output.raw)
+    context_info.trust_zone_analysis = output.raw
 
     threat_scenario_task = tasks.threat_scenario_creation_task(
-      system_description=output.raw,
+      context_info = context_info,
       agent=agents.threat_scenario_agent()
     )
 
     output = threat_scenario_task.execute_sync()
-    # rag_context = similarity_search(output.raw)
-    utils.append_to_file(detail_output_file, output.raw)
-    # util.append_to_file(detail_output_file, rag_context)
+
+    # utils.append_to_file(detail_output_file, output.raw)
+
+    rag_context = similarity_search(output.raw, collection_name="controls")
+    context_info.threat_scenario = output.raw
+    context_info.rag_context = rag_context
+
 
     control_measure_task = tasks.control_measure_task(
-      system_description=output.raw,
+      context_info = context_info,
       agent=agents.controls_agent()
     )
     output = control_measure_task.execute_sync()
-    utils.append_to_file(detail_output_file, output.raw)
-    utils.append_to_file(temp_file, output.raw)
-
-    return output.raw
-    
-
-  def execute(self, main_model, system_information):
-    agents = ProductSecurityAgent(main_model, main_model)
-    tasks = ProductSecurityTask()
-
-    if (system_information):
-      architectural_analysis_task = tasks.anaylsis_task(
-        system_description=system_information,
-        agent=agents.architectural_analysis_agent()
-      )
-      output = architectural_analysis_task.execute_sync()
-
-    else:
-      return "Input information required"
-
-    utils.append_to_file(detail_output_file, output.raw)
-
-    trust_zone_identification_task = tasks.trust_boundary_identification_task(
-      system_description=output.raw,
-      agent=agents.trust_zone_identification_agent()
-    )
-
-    output = trust_zone_identification_task.execute_sync()
-    utils.append_to_file(detail_output_file, output.raw)
-
-    threat_scenario_task = tasks.threat_scenario_creation_task(
-      system_description=output.raw,
-      agent=agents.threat_scenario_agent()
-    )
-
-    output = threat_scenario_task.execute_sync()
-    # rag_context = similarity_search(output.raw)
-    utils.append_to_file(detail_output_file, output.raw)
-    # util.append_to_file(detail_output_file, rag_context)
-
-    control_measure_task = tasks.control_measure_task(
-      system_description=output.raw,
-      agent=agents.controls_agent()
-    )
-    output = control_measure_task.execute_sync()
-    utils.append_to_file(detail_output_file, output.raw)
-    utils.append_to_file(temp_file, output.raw)
+    # utils.append_to_file(detail_output_file, output.raw)
+    # utils.append_to_file(temp_file, output.raw)
 
     return output.raw
