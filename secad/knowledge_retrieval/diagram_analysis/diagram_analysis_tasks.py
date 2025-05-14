@@ -104,14 +104,17 @@ class DiagramAnalysisTasks:
             expected_output= dedent(
             """
             Your final answer must and ONLY a valid mermaid code without any other text.
-            Don't include any other text or explanation. DO NOT include
+            - Don't include any other text or explanation. DO NOT include
             "```mermaid" or "```" or any other text. Just include the mermaid code starting "graph TD"
             An example of a valid format is below (without the "):
             "
                 graph TD
-                A[Component A] -->|Protocol| B[Component B]
-                A --> C[Component C]
-                B --> D[Component D]
+                    TCP_Data[TCP Data Sources]
+                    DB_Data[Database Data Sources]
+                    API_Data[API Data Sources]
+
+                    TCP_Data --> DB_Data
+                    API_Data --> DB_Data
             "
             Make sure to use the correct syntax for mermaid diagrams.
             """

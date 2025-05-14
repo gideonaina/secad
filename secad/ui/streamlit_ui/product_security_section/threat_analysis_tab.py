@@ -8,6 +8,7 @@ from PIL import Image
 
 from knowledge_retrieval.diagram_analysis.diagram_analysis_crew import DiagramAnalysisCrew
 from knowledge_retrieval.threat_analysis.threat_analysis_crew import ThreatAnalysisCrew
+from knowledge_retrieval.threat_analysis_auto.threat_analysis_auto_crew import ThreatAnalysisAutoCrew
 from knowledge_retrieval.models import ThreatAnalysisContext
 from ui.utils import get_llm_model, check_file_type
 
@@ -40,43 +41,6 @@ def get_tab(data, selected_model, model_provider):
             if 'uploaded_file' not in st.session_state or st.session_state.uploaded_file != uploaded_file:
                 # print(f"$$$${uploaded_file}$$$$ file url {uploaded_file._file_urls[2]}")
                 st.session_state.uploaded_file = uploaded_file
-                # analysis_output = None
-
-                # # Check if the uploaded file is a mermaid diagram
-                # if check_file_type(uploaded_file.name, "mmd"):
-                #     with st.spinner("Agent analysing architecture diagram..."):
-                #         try:
-                #             mermaid_code = uploaded_file.read().decode("utf-8")
-                #             render_mermaid_diagram(mermaid_code)
-                #             st.session_state['mermaid_code'] = mermaid_code
-                #             st.session_state['is_mermaid_diagram'] = True
-                #             analysis_output = DiagramReview().run(llm_model, mermaid_code)
-                #             st.session_state['analysis_output'] = analysis_output
-                #         except Exception as e:
-                #             st.error(f"Does not look like the file has a valid mermaid diagram - {e}")
-                
-                # else:
-                #     with st.spinner("Agent analysing architecture..."):
-                #         temp_dir = "/tmp"  # Specify your desired directory
-                #         os.makedirs(temp_dir, exist_ok=True)
-                #         file_path = os.path.join(temp_dir, uploaded_file.name)
-
-                #         # TODO: use the uploaded_file._file_urls to get the file url or use the BytesIO directly.
-                #         with open(file_path, "wb") as f:
-                #             f.write(uploaded_file.getbuffer())
-                        
-                #         image = Image.open(uploaded_file)
-                #         image_placeholder.image(image, caption="Uploaded Image")
-
-                #         try:
-                #             analysis_output = ImageReview().run(llm_model, file_path)
-                #             st.session_state['analysis_output'] = analysis_output
-                #             mermaid_code = ImageReview().run_mermaid(llm_model, file_path)
-                #             st.session_state['mermaid_code'] = mermaid_code
-                #             if not analysis_output:
-                #                 st.error("Failed to analyze architecture.")
-                #         except Exception as e:
-                #             st.error("An unexpected error occurred while analyzing the image. Error {e}")
 
                 if check_file_type(uploaded_file.name, "mmd"):
                     mermaid_code = uploaded_file.read().decode("utf-8")
@@ -116,14 +80,6 @@ def get_tab(data, selected_model, model_provider):
                 if st.session_state.get('arch_analysis_output', None):
                     st.session_state['analysis_output'] = arch_analysis_output.system_information
                     st.session_state['mermaid_code'] = arch_analysis_output.mermaid_diagram
-
-                    # # Check if the analysis output is a mermaid diagram
-                    # if check_file_type(uploaded_file.name, "mmd"):
-                    #     st.session_state['is_mermaid_diagram'] = True
-                    #     render_mermaid_diagram(st.session_state.get('mermaid_code', ''))
-                    # else:
-                    #     image = Image.open(uploaded_file)
-                    #     image_placeholder.image(image, caption="Uploaded Image")
             
 
             uploaded_file = st.session_state.get("uploaded_file", None)
@@ -153,12 +109,16 @@ def get_tab(data, selected_model, model_provider):
         help="Please provide a detailed description of the application, including the purpose of the application, the technologies used, and any other relevant information.",
     )
 
+    col1, col2 = st.columns(2)
+    with col1:
+        threat_analysis_button = st.button(label="Analyze Threat", key=f"{KEY_PREFIX}_button")
 
-    # Create a submit button for Threat Modeling
-    threat_analysis_button = st.button(label="Analyze Threat", key=f"{KEY_PREFIX}_button")
+    with col2:
+        threat_analysis_auto_button = st.button(label="Analyze Threat - Auto", key=f"{KEY_PREFIX}_auto_button")
 
-    # If the Generate Threat Model button is clicked and the user has provided an application description
-    if threat_analysis_button and st.session_state.get(f"{KEY_PREFIX}_input"):
+    # Non-Agentic Threat Model Generation.
+    # Generate Threat Model button is clicked and the user has provided an application description
+    if ((threat_analysis_button or threat_analysis_auto_button) and st.session_state.get(f"{KEY_PREFIX}_input")):
         app_input = st.session_state[f"{KEY_PREFIX}_input"]  # Retrieve from session state
         model_temp = st.session_state.get('model_temp')
 
@@ -178,14 +138,32 @@ def get_tab(data, selected_model, model_provider):
                     mermaid_diagram=st.session_state.get('mermaid_code', None)
                 )
                 
-                if app_input and st.session_state.get('mermaid_code', None):
+                if threat_analysis_button and app_input and st.session_state.get('mermaid_code', None):
+                    context_info = ThreatAnalysisContext(
+                    system_information=app_input, # st.session_state.get('analysis_output', None),
+                    mermaid_diagram=st.session_state.get('mermaid_code', None)
+                )
                     threat_analysis_output = ThreatAnalysisCrew().execute(llm_model, context_info)
                     st.session_state[f"{KEY_PREFIX}"] = threat_analysis_output
+
+                elif threat_analysis_auto_button and app_input and st.session_state.get('mermaid_code', None):
+                #     context_info = f"""
+                #     # System Information 
+                #     {app_input}, 
+
+                #     # Mermaid Diagram
+                #     {st.session_state.get('mermaid_code', None)}
+                #  """
+                    mermaid_code = st.session_state.get('mermaid_code', None)
+                    context_info = {"system_information": f"{app_input}", "mermaid_diagram": f"{mermaid_code}"}
+                    threat_analysis_output = ThreatAnalysisAutoCrew().execute(llm_model, context_info)
+                    st.session_state[f"{KEY_PREFIX}"] = threat_analysis_output                    
                 else:
                     st.error("Please upload arch diagram to extract a valid application description and architecture diagram.")
             except Exception as e:
-                print(f"Threat analysis error: {e}")
+                print(f"Threat analysis error for this prompt: {context_info}")
                 st.error(f"Error generating threat model. Error: {e}")
+                raise RuntimeError(f"Error generating threat model. Error: {e}")
     
     if st.session_state.get(f"{KEY_PREFIX}", None):
         # Convert the threat model JSON to Markdown
@@ -255,17 +233,3 @@ def render_mermaid_diagram(mermaid_code):
         </body>
         </html>
         """, scrolling=True, height=500)
-
-# def get_input(key=""):
-#     input_text = st.text_area(
-#         label="Describe the System Architecture",
-#         value=st.session_state.get('app_input', ''),
-#         placeholder="Enter your application details...",
-#         height=300,
-#         key=f"{key}_app_desc",
-#         help="Please provide a detailed description of the application, including the purpose of the application, the technologies used, and any other relevant information.",
-#     )
-
-#     st.session_state['app_input'] = input_text
-
-#     return input_text
