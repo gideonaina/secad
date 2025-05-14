@@ -19,9 +19,10 @@ detail_output_file = "/tmp/crew_detail.md"
 
 '''
 =======================================================
- This is a demostrative of non-agentic execution workflow.
+ This is a demostration of non-agentic execution workflow.
  Notice how state is passed around and how the tasks are executed.
- The tasks are executed in a sequential manner and the output of one task is passed to the next task.
+ The tasks are executed in a sequential manner and the output of
+ one task is passed to the next task.
  The tasks are executed in a synchronous manner.
 =======================================================
 '''

@@ -36,6 +36,7 @@ def get_tab(data, selected_model, model_provider):
 
         if uploaded_file is not None:
             image_placeholder = st.empty()
+            mmd_code_text_box  = st.empty()
 
             # Check if the uploaded file exist and its not the same as the previous one            
             if 'uploaded_file' not in st.session_state or st.session_state.uploaded_file != uploaded_file:
@@ -44,7 +45,8 @@ def get_tab(data, selected_model, model_provider):
 
                 if check_file_type(uploaded_file.name, "mmd"):
                     mermaid_code = uploaded_file.read().decode("utf-8")
-                    render_mermaid_diagram(mermaid_code)
+                    # mmd_code_text_box = st.text_area("Mermaid Code", value=mermaid_code, height=300)
+                    # render_mermaid_diagram(mmd_code_text_box)
                     st.session_state['mermaid_code'] = mermaid_code
                     st.session_state['is_mermaid_diagram'] = True
 
@@ -81,17 +83,26 @@ def get_tab(data, selected_model, model_provider):
                     st.session_state['analysis_output'] = arch_analysis_output.system_information
                     st.session_state['mermaid_code'] = arch_analysis_output.mermaid_diagram
             
+            mermaid_code = st.session_state['mermaid_code']
+            mmd_code_text_box = st.text_area("Mermaid Code", value=mermaid_code, key=f"{KEY_PREFIX}_mermaid_box", height=300)
+            render_mermaid_diagram(mmd_code_text_box)
 
             uploaded_file = st.session_state.get("uploaded_file", None)
-            if check_file_type(uploaded_file.name, "mmd"):
-                mermaid_code = st.session_state['mermaid_code']
-                render_mermaid_diagram(mermaid_code)
-
-            else:
+            if not check_file_type(uploaded_file.name, "mmd"):
                 image = Image.open(st.session_state.get('uploaded_file'))
                 image_placeholder.image(image, caption="Uploaded Image")
-                mermaid_code = st.session_state['mermaid_code']
-                render_mermaid_diagram(mermaid_code)
+
+            # uploaded_file = st.session_state.get("uploaded_file", None)
+            # if check_file_type(uploaded_file.name, "mmd"):
+            #     mermaid_code = st.session_state['mermaid_code']
+            #     mmd_code_text_box = st.text_area("Mermaid Code", value=mermaid_code, height=300)
+            #     render_mermaid_diagram(mmd_code_text_box)
+
+            # else:
+            #     image = Image.open(st.session_state.get('uploaded_file'))
+            #     image_placeholder.image(image, caption="Uploaded Image")
+            #     mermaid_code = st.session_state['mermaid_code']
+            #     render_mermaid_diagram(mermaid_code)
 
             if st.session_state.get('analysis_output', None):
                 st.session_state['app_input'] = st.session_state.get('analysis_output')
@@ -118,8 +129,8 @@ def get_tab(data, selected_model, model_provider):
 
     # Non-Agentic Threat Model Generation.
     # Generate Threat Model button is clicked and the user has provided an application description
-    if ((threat_analysis_button or threat_analysis_auto_button) and st.session_state.get(f"{KEY_PREFIX}_input")):
-        app_input = st.session_state[f"{KEY_PREFIX}_input"]  # Retrieve from session state
+    if ((threat_analysis_button or threat_analysis_auto_button) and input_text):
+        app_input = input_text  # Retrieve from session state
         model_temp = st.session_state.get('model_temp')
 
         # Show a spinner while generating the threat model
@@ -204,10 +215,11 @@ def json_to_threat_model_markdown(threat_model):
     
     return markdown_output
 
-def render_mermaid_diagram(mermaid_code):
+# def render_mermaid_diagram(mermaid_code):
+def render_mermaid_diagram(mermaid_code_text_box):
     # See information on the html conversion her - https://emersonbottero.github.io/mermaid-docs/config/usage.html
 
-    user_code = st.text_area("Mermaid Code", value=mermaid_code, key=f"{KEY_PREFIX}_mermaid_box", height=300, )
+    # mermaid_code_text_box = st.text_area("Mermaid Code", value=mermaid_code, key=f"{KEY_PREFIX}_mermaid_box", height=300)
     components.html(f"""
         <html>
         <head>
@@ -228,7 +240,7 @@ def render_mermaid_diagram(mermaid_code):
         </head>
         <body>
         <div class="scroll-container">
-        <div class="mermaid">{user_code}</div>
+        <div class="mermaid">{mermaid_code_text_box}</div>
         </div>
         </body>
         </html>

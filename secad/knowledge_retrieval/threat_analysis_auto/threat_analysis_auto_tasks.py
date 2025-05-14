@@ -6,7 +6,7 @@ from crewai import Task
 class ThreatAnalysisAutoTasks:
 
     def trust_boundary_identification_task(self, agent):
-        return Task(description=dedent("""
+        return Task(description="""
             <task>
             Using the system information provided {system_information} and the 
             mermaid diagram representation of the system architecture , {mermaid_diagram},
@@ -26,7 +26,7 @@ class ThreatAnalysisAutoTasks:
                 {tip_section}
             </notes>
 
-        """).format(tip_section = self.__tip_section()),
+        """.format(tip_section = self.__tip_section()),
             agent=agent,
             expected_output= dedent(
             """
