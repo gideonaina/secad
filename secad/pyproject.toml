@@ -21,7 +21,6 @@ dependencies = [
     "langchain-community>=0.2.19",
     "langchain-openai==0.1.17",
     "langchain-postgres>=0.0.12",
-    "openai==1.37.0",
     "pgvector>=0.2.5",
     "psycopg==3.2.1",
     "pypdf==4.3.1",
@@ -33,13 +32,17 @@ dependencies = [
     "gradio>=5.7.0",
     "streamlit>=1.40.2",
     "pygithub>=2.5.0",
+    "pyyaml>=6.0.2",
+    "psycopg2-binary>=2.9.10",
+    "pydantic>=2.10.2",
 ]
 
-[tools.uv]
-source = ["secad"]
+#[tool.uv]
+#source = ["secad"]
 
 [dependency-groups]
 dev = [
+    "debugpy>=1.8.14",
     "ruff>=0.8.0",
 ]
 

@@ -29,6 +29,7 @@ sidebar:
         - "jpg"
         - "jpeg"
         - "png"
+        - "mmd"
   
   azure_openai_api:
     instructions: |
@@ -85,5 +86,10 @@ sidebar:
           - "x"
         default: "x"
 
-
+  rag:
+    collections:
+      - "requirements"
+      - "controls"
+      - "threats"
+      - "tests"
   

@@ -1,0 +1,17 @@
+setup:
+	uv venv && uv sync && uv pip install -e .
+
+rag-ingest:
+	uv run python rag_management/data_prep.py -c $(COLLECTION) -f $(FILE)
+
+start-gradio:
+	uv run gradio main.py
+
+dev:
+	uv run streamlit run ui/streamlit_ui/launch.py --server.port 8501 --server.address 0.0.0.0
+
+debug:
+	uv run python -m debugpy --listen 0.0.0.0:5678 --wait-for-client -m streamlit run ui/streamlit_ui/launch.py --server.port 8501 --server.address 0.0.0.0
+
+start:
+	streamlit run ui/streamlit_ui/launch.py --server.port 8501 --server.address 0.0.0.0

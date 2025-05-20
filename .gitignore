@@ -1,6 +1,5 @@
 .DS_Store
 .ipynb_checkpoints/
-.vscode/
 .venv/
 __pycache__/
 .env
@@ -9,3 +8,7 @@ __pycache__/
 temp/
 tmp/
 iac/
+
+#Ignore vscode files except the debug config
+secad/.vscode/*
+!secad/.vscode/launch.json

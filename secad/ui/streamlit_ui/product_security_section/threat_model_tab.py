@@ -2,8 +2,10 @@ import json
 import os
 
 import streamlit as st
+import streamlit.components.v1 as components
 
-from knowledge_retrieval.image_review_crew.image_review import ImageReview
+
+from knowledge_retrieval.architecture_review_crew.image_review import ImageReview
 from knowledge_retrieval.product_security_crew.threat_model_crew import ThreatModelCrew
 from ui.utils import get_input, get_llm_model
 
@@ -41,9 +43,12 @@ def get_tab(data, selected_model, model_provider):
 
                     try:
                         image_analysis_output = ImageReview().run(llm_model, file_path)
+                        mermaid_code = ImageReview().run_mermaid(llm_model, file_path)
                         if image_analysis_output:
                             st.session_state.image_analysis_content = image_analysis_output
                             st.session_state['app_input'] = image_analysis_output
+                            st.session_state['mermaid_code'] = mermaid_code
+
                         else:
                             st.error("Failed to analyze the image.")
                     except Exception as e:
@@ -52,8 +57,15 @@ def get_tab(data, selected_model, model_provider):
                 
                 
                     
-    # Use the get_input() function to get the application description and GitHub URL
+    # Use the get_input() function to get the application description
     app_input = get_input()
+
+    # Display the mermaid diagram
+    # st.text_area("Mermaid Code", value=mermaid_code, height=150)
+    if st.session_state.get("image_analysis_content", None):
+        render_mermaid_diagram(st.session_state.get('mermaid_code', ''))
+
+
     # Update session state only if the text area content has changed
     if app_input != st.session_state['app_input']:
         st.session_state['app_input'] = app_input
@@ -118,3 +130,33 @@ def json_to_threat_model_markdown(threat_model):
         markdown_output += f"| R.{idx+1} | {threat['threat_type']} | {threat['threat_scenario']} | {threat['impact']} |{threat['control']} |\n"
     
     return markdown_output
+
+def render_mermaid_diagram(mermaid_code):
+    # See information on the html conversion her - https://emersonbottero.github.io/mermaid-docs/config/usage.html
+
+    user_code = st.text_area("Mermaid Code", value=mermaid_code, height=250)
+    components.html(f"""
+        <html>
+        <head>
+        <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({{ startOnLoad: true }});
+        </script>
+        <style>
+      .scroll-container {{
+        width: 100%;
+        height: 400px;
+        overflow: auto;
+        border: 1px solid #ccc;
+        padding: 10px;
+        box-sizing: border-box;
+        }}
+    </style>
+        </head>
+        <body>
+        <div class="scroll-container">
+        <div class="mermaid">{user_code}</div>
+        </div>
+        </body>
+        </html>
+        """, height=450)

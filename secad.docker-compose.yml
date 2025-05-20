@@ -1,0 +1,36 @@
+services:
+  secad:
+    build:
+      context: .
+      dockerfile: secad.Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8501:8501"
+    env_file:
+      - ./secad/.env
+    depends_on:
+      - vector-db
+    networks:
+      - ragnet
+  
+  vector-db:
+    build:
+      context: .
+      dockerfile: db.Dockerfile
+    environment:
+      LANG: en_US.utf8
+      LANGUAGE: en_US:en
+      LC_ALL: en_US.utf8
+    ports:
+      - "5432:5432"
+    env_file:
+      - ./secad/.env
+    volumes:
+      - ./initdb:/docker-entrypoint-initdb.d
+    networks:
+      - ragnet
+
+networks:
+  ragnet:
+    driver: bridge
+

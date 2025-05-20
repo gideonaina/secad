@@ -97,8 +97,6 @@ def get_model_provider(model_provider, config_data):
             )
 
 def get_input(key=""):
-    # Inspired by the StrideGPT UI
-    
     # github_url = st.text_input(
     #     label="Enter GitHub repository URL (optional)",
     #     placeholder="https://github.com/owner/repo",
@@ -236,7 +234,7 @@ def get_llm_model(model_info: dict):
             
         return ChatOpenAI(
             model=model_name,
-            # api_key=api_key,
+            api_key=api_key,
             temperature=temp_slider
         )
 
@@ -256,23 +254,3 @@ def get_llm_model(model_info: dict):
                 temperature=model_info['model_temp'],
                 base_url=base_url
             )
-        
-def check_file_type(file_path: str, file_type: str):
-    # _, file_extension = os.path.splitext(file_path)
-    file_path_parts = file_path.lower().split('.')
-
-    if file_path_parts[-1] == file_type:
-        return True
-    
-    return False
-
-
-def is_image(uploaded_file):
-    # _, file_extension = os.path.splitext(file_path)
-    file_path = uploaded_file.type
-    file_path_parts = file_path.lower().split('/')
-
-    if file_path_parts[0] == "image":
-        return True
-    
-    return False
