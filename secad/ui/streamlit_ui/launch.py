@@ -64,15 +64,15 @@ with st.sidebar:
                 st.info(result["message"])
 
 
-tab1  = st.tabs(["Threat Model"])[0]
-# tab1, tab2, tab3 = st.tabs(["Threat Model", "Security Requirements", "Requirement Refinement"])
+# tab1  = st.tabs(["Threat Model"])[0]
+tab1, tab2 = st.tabs(["Threat Model", "Control - Threat Model"])
 selected_model = st.session_state.get('selected_model', '')
 
 with tab1:
     threat_analysis_tab.get_tab(data=data, model_provider=model_provider, selected_model=selected_model)
 
-# with tab2:
-#     threat_model_tab.get_tab(data=data, model_provider=model_provider, selected_model=selected_model)
+with tab2:
+    threat_model_tab.get_tab(data=data, model_provider=model_provider, selected_model=selected_model)
 
 # with tab3:
 #     security_review_tab.get_tab(data=data, model_provider=model_provider, selected_model=selected_model)

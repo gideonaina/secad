@@ -43,11 +43,11 @@ def get_tab(data, selected_model, model_provider):
 
                     try:
                         image_analysis_output = ImageReview().run(llm_model, file_path)
-                        mermaid_code = ImageReview().run_mermaid(llm_model, file_path)
+                        # mermaid_code = ImageReview().run_mermaid(llm_model, file_path)
                         if image_analysis_output:
                             st.session_state.image_analysis_content = image_analysis_output
                             st.session_state['app_input'] = image_analysis_output
-                            st.session_state['mermaid_code'] = mermaid_code
+                            # st.session_state['mermaid_code'] = mermaid_code
 
                         else:
                             st.error("Failed to analyze the image.")
@@ -62,8 +62,8 @@ def get_tab(data, selected_model, model_provider):
 
     # Display the mermaid diagram
     # st.text_area("Mermaid Code", value=mermaid_code, height=150)
-    if st.session_state.get("image_analysis_content", None):
-        render_mermaid_diagram(st.session_state.get('mermaid_code', ''))
+    # if st.session_state.get("image_analysis_content", None):
+    #     render_mermaid_diagram(st.session_state.get('mermaid_code', ''))
 
 
     # Update session state only if the text area content has changed
