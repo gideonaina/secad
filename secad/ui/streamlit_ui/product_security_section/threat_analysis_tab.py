@@ -111,6 +111,18 @@ def get_tab(data, selected_model, model_provider):
     # Use the get_input() function to get the application description
     # app_input = get_input(key=f"{KEY_PREFIX}_input")
 
+    update_system_description = st.button(label="Update Description", key=f"{KEY_PREFIX}_description_button", disabled=False)
+
+
+    if update_system_description:
+        try:
+            with st.spinner("Agent analysing architecture..."):
+                arch_analysis_output = DiagramAnalysisCrew().run_mermaid_description(llm_model, st.session_state['mermaid_code'])
+                st.session_state['arch_analysis_output'] = arch_analysis_output
+        except Exception as e:
+            print(f"Image analysis error: {e}")
+            st.error(f"An unexpected error occurred while analyzing the image. Error {e}")
+    
     input_text = st.text_area(
         label="Describe the System Architecture",
         value=st.session_state.get('app_input', ''),
@@ -119,13 +131,13 @@ def get_tab(data, selected_model, model_provider):
         key=f"{KEY_PREFIX}_input",
         help="Please provide a detailed description of the application, including the purpose of the application, the technologies used, and any other relevant information.",
     )
-
+            
     col1, col2 = st.columns(2)
     with col1:
-        threat_analysis_button = st.button(label="Analyze Threat", key=f"{KEY_PREFIX}_button")
+        threat_analysis_button = st.button(label="Analyze Threat", key=f"{KEY_PREFIX}_button", disabled=False)
 
     with col2:
-        threat_analysis_auto_button = st.button(label="Analyze Threat - Auto", key=f"{KEY_PREFIX}_auto_button")
+        threat_analysis_auto_button = st.button(label="Analyze Threat - Auto", key=f"{KEY_PREFIX}_auto_button", disabled=True)
 
     # Non-Agentic Threat Model Generation.
     # Generate Threat Model button is clicked and the user has provided an application description

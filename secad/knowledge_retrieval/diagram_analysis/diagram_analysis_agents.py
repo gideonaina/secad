@@ -61,6 +61,24 @@ class DiagramAnalysisAgents:
     )
 
 
+    def mermaid_system_information_agent(self, llm):
+        return Agent(
+            role='Software Architect',
+            backstory=dedent(""" You are an expert in software architecture
+                        with expertise in understanding the details of a software 
+                        by looking at the mermaid architectural diagram.
+                        """),
+            goal=dedent("""Properly Analyze the software architectural diagram,
+                        break it down into its components, connections between 
+                        components and communication protocols. This information 
+                        will be used as input into a threat modeling task.
+                        """),
+            verbose=True,
+            allow_delegation=False,
+            llm = llm
+    )
+
+
 
     
 

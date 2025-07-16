@@ -44,3 +44,11 @@ class DiagramAnalysisCrew:
             mermaid_diagram=validated_mmd_diagram.raw,
             architectural_diagram_type= DiagramType.IMG
         )
+    
+    def run_mermaid_description(self, llm, mermaid_diagram) -> str:
+        mermaid_diagram_agent = self.agents.mermaid_system_information_agent(llm)
+        mermaid_diagram_task = self.tasks.mermaid_architecture_diagram_analysis_task(mermaid_diagram, mermaid_diagram_agent)
+
+        system_info = mermaid_diagram_task.execute_sync()   
+
+        return system_info.raw
