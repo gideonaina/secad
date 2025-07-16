@@ -140,6 +140,7 @@ class DiagramAnalysisTasks:
             Your final answer must and ONLY a valid mermaid code without any other text.
             Don't include any other text or explanation. DO NOT include
             "```mermaid" or "```" or any other text. Just include the mermaid code starting "graph TD"
+            DO NOT include parenthesis. For example, don't include "()". 
             An example of a valid format is below (without the "):
             "
                 graph TD

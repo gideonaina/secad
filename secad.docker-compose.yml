@@ -29,6 +29,18 @@ services:
       - ./initdb:/docker-entrypoint-initdb.d
     networks:
       - ragnet
+  
+  mermaid:
+    build:
+      context: ./mcp/mermaid
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+    networks:
+      - ragnet
 
 networks:
   ragnet:
